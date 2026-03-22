@@ -1,0 +1,10 @@
+# Claude Code 개인 설정
+.claude/
+
+# n8n 작업 중 생성되는 임시 파일
+workflow_*.json
+wf_*.json
+
+# OS 파일
+.DS_Store
+Thumbs.db
