@@ -1,0 +1,2915 @@
+{
+  "updatedAt": "2026-03-22T05:04:53.792Z",
+  "createdAt": "2026-03-17T12:55:02.629Z",
+  "name": "뉴스 브리핑 자동화",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "node-manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 07 * * * "
+            }
+          ]
+        }
+      },
+      "id": "node-schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -144,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114",
+        "options": {}
+      },
+      "id": "node-cnbc-rss",
+      "name": "CNBC RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        224,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.finance.yahoo.com/rss/2.0/headline?s=^GSPC&region=US&lang=en-US",
+        "options": {}
+      },
+      "id": "node-yahoo-rss",
+      "name": "Yahoo Finance RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        224,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "node-set-yonhap-source",
+              "name": "source",
+              "value": "yonhap",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "node-set-yonhap",
+      "name": "Set Yonhap Source",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "node-set-cnbc-source",
+              "name": "source",
+              "value": "cnbc",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "node-set-cnbc",
+      "name": "Set CNBC Source",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "node-set-yahoo-source",
+              "name": "source",
+              "value": "yahoo",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "node-set-yahoo",
+      "name": "Set Yahoo Source",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "id": "node-merge-news",
+      "name": "Merge News Sources",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        688,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b7df274-92cb-4b4e-b356-bc3c0a08406e",
+              "name": "index",
+              "value": "={{ $json.index }}",
+              "type": "string"
+            },
+            {
+              "id": "f1",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "f4",
+              "name": "source",
+              "value": "={{ $json.source }}",
+              "type": "string"
+            },
+            {
+              "id": "d38db801-9ebe-4702-bd4d-550d3fbcc061",
+              "name": "content",
+              "value": "={{ $json.content || $json.contentSnippet }}",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "article_date",
+              "value": "={{ $json.isoDate || $json.pubDate || $json.published }}",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "article_url",
+              "value": "={{ $json.link || $json.guid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-normalize",
+      "name": "Normalize Article Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1088,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst now = new Date();\nconst cutoff = new Date(now.getTime() - 15 * 60 * 60 * 1000);\n\nreturn items.filter(item => {\n  const articleDate = new Date(item.json.article_date);\n  return articleDate >= cutoff;\n}).map(item => ({ json: item.json }));"
+      },
+      "id": "node-filter-time",
+      "name": "Filter By Time",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        -192
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "뉴스 아카이브",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "뉴스 아카이브",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "node-read-archive",
+      "name": "Read Archive URLs",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1552,
+        144
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst urls = items\n  .filter(item => !item.json.error && !item.json.message)\n  .map(item => item.json.url || item.json.article_url || '')\n  .filter(Boolean);\nreturn [{ json: { archived_urls: urls, loaded: true } }];"
+      },
+      "id": "node-aggregate-archive",
+      "name": "Aggregate Archive URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        144
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "node-merge-dedup",
+      "name": "Merge Before Dedup",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1552,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\n\n// Separate archive summary (has loaded marker) from articles\nconst archiveSummary = allItems.find(item => item.json.loaded === true);\nconst archivedUrls = new Set(archiveSummary?.json?.archived_urls || []);\n\n// Articles are all items without the loaded marker\nconst articles = allItems.filter(item => item.json.loaded !== true);\n\nconst seenUrls = new Set();\nreturn articles.filter(item => {\n  const url = item.json.article_url || '';\n  if (!url || archivedUrls.has(url) || seenUrls.has(url)) return false;\n  seenUrls.add(url);\n  return true;\n}).map(item => ({ json: item.json }));"
+      },
+      "id": "node-filter-new",
+      "name": "Filter New Articles",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-usa",
+                    "leftValue": "={{ $json.country }}",
+                    "rightValue": "미국",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "미국"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-china",
+                    "leftValue": "={{ $json.country }}",
+                    "rightValue": "중국",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "중국"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-korea",
+                    "leftValue": "={{ $json.country }}",
+                    "rightValue": "한국",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "한국"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-other",
+                    "leftValue": "={{ $json.country }}",
+                    "rightValue": "기타",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "기타"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-switch-country",
+      "name": "Switch By Country",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        2256,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 1; // 원하는 개수로 변경\n\nconst items = $input.all();\n\nconst topN = items\n  .sort((a, b) => (b.json.score || 0) - (a.json.score || 0))\n  .slice(0, N);\n\nreturn topN.map(item => ({ json: item.json }));\n"
+      },
+      "id": "node-top-china",
+      "name": "Top N China",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 1; // 원하는 개수로 변경\n\nconst items = $input.all();\n\nconst topN = items\n  .sort((a, b) => (b.json.score || 0) - (a.json.score || 0))\n  .slice(0, N);\n\nreturn topN.map(item => ({ json: item.json }));\n"
+      },
+      "id": "node-top-other",
+      "name": "Top N Other",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 8
+      },
+      "id": "node-merge-selected",
+      "name": "Merge Selected Articles",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3040,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ '제목: ' + $json.title + '\\n\\n기사 본문:\\n' +  $json.content }}",
+        "options": {
+          "systemMessage": "당신은 경제·금융 뉴스를 요약하는 전문 애널리스트입니다.\n\n기사가 영어인 경우 전체 내용을 한국어로 번역하여 처리하세요.\n\n[제목 정제 규칙]\n- 원제목의 핵심 주체와 사건만 남겨 간결하게 재작성\n- 불필요한 조사·수식어·출처 제거\n- 20자 내외로 압축\n\n[요약 규칙]\n- 핵심 주체를 앞에 제시하고 쉼표로 연결\n- 배경·원인 → 핵심 내용 → 결과·의미·전망 순서로 서술\n- 구체적인 수치(금액, 날짜, %, 배수), 고유명사 반드시 포함\n- 쉼표로 맥락을 연결하며 밀도 있게 서술\n- 2~3문장, 이모지·출처 없이 한 단락 작성 (줄바꿈 없음)\n- 각 문장은 40자 내외로 간결하게 유지\n\n[출력 예시]\n{\"title\": \"AWS, 2026년 자본지출 2,000억 달러로 확대\", \"summary\": \"아마존 CEO, AWS 연간 매출이 10년 내 6,000억 달러 도달 전망 발표하며 2026년 자본지출 2,000억 달러로 대폭 확대 결정. 맞춤형 칩 호조·수주잔고 40% 증가를 근거로 빅테크 인프라 경쟁 가속화 속 투자 정당성 강조.\"}\n\n반드시 위와 동일한 JSON 형식으로만 출력:\n{\"title\": \"정제된 제목\", \"summary\": \"요약 내용\"}\n"
+        }
+      },
+      "id": "node-ai-summarizer",
+      "name": "AI Summarizer",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        5072,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "id": "node-openai-summary-model",
+      "name": "OpenAI Summary Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        5072,
+        336
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "뉴스 자동화 브리핑 워크플로우"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nreturn items.map((item) => {\n  const output = item.json.output || '';\n  let title = '';\n  let summary = '';\n\n  try {\n    const parsed = JSON.parse(output);\n    title = parsed.title || '';\n    summary = parsed.summary || '';\n  } catch(e) {\n    const titleMatch = output.match(/\"title\"\\s*:\\s*\"([^\"]+)\"/);\n    const summaryMatch = output.match(/\"summary\"\\s*:\\s*\"([\\s\\S]+?)\"\\s*\\}/) ;\n    title = titleMatch ? titleMatch[1] : '';\n    summary = summaryMatch ? summaryMatch[1] : '';\n  }\n\n  return {\n    json: {\n      country: item.json.country || '기타',\n      title,\n      summary\n    }\n  };\n});\n"
+      },
+      "id": "node-parse-summary",
+      "name": "Parse Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5600,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all().filter(item => item.json.summary);\n\nlet marketData = '';\n\nif ($('시장 데이터 조회 + 메시지 포맷').isExecuted) {\n  const data = $('시장 데이터 조회 + 메시지 포맷').all();\n  marketData = data?.[0]?.json?.message || '';\n}\n\nfunction escapeMarkdown(text) {\n  return (text || '').replace(/([_*\\[\\]()~`>#+\\-=|{}.!\\\\])/g, '\\\\$1');\n}\n\nconst countryLabels = {\n  '미국': '미국', 'US': '미국', 'USA': '미국',\n  '중국': '중국', 'CN': '중국', 'China': '중국',\n  '한국': '한국', 'KR': '한국', 'Korea': '한국',\n  '기타': '기타'\n};\nconst countryOrder = ['미국', '중국', '한국', '기타'];\n\nconst now = new Date();\nconst kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);\nconst month = kst.getUTCMonth() + 1;\nconst day = kst.getUTCDate();\n\nconst grouped = {};\nfor (const item of items) {\n  const raw = (item.json.country || '기타').trim();\n  const label = countryLabels[raw] || '기타';\n  if (!grouped[label]) grouped[label] = [];\n  grouped[label].push({\n    title: item.json.title || '',\n    summary: item.json.summary\n  });\n}\n\nlet message = `안녕하세요\\\\.\\n\\\\[${month}월 ${day}일 모닝 브리핑\\\\] 보내드립니다\\\\.`;\n\nif (marketData) {\n  message += '\\n\\n' + escapeMarkdown(marketData);\n}\n\nmessage += '\\n\\n\\\\[주요국 이슈\\\\]';\n\nfor (const country of countryOrder) {\n  const articles = grouped[country];\n  if (!articles || articles.length === 0) continue;\n  message += `\\n\\n\\\\# ${country}\\n`;\n  message += articles.map(a =>\n    `*${escapeMarkdown(a.title)}*\\n${escapeMarkdown(a.summary)}`\n  ).join('\\n\\n');\n}\n\nmessage += `\\n\\n\\\\[밑바닥리서치 텔레그램 채널 / 블로그\\\\]\\nhttps://t\\\\.me/undergroundresearch36\\nhttps://blog\\\\.naver\\\\.com/undergroundresearch`;\n\nreturn [{ json: { message } }];"
+      },
+      "id": "node-assemble-message",
+      "name": "Assemble Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5824,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": false,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "id": "node-send-telegram",
+      "name": "Send Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        6032,
+        128
+      ],
+      "webhookId": "3bc5f74a-be70-4826-a0d2-3a8aafec6ab1",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "밑바닥리서치 뉴스 자동화 브리핑 워크플로우"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### 1. 시간 필터링",
+        "height": 208,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1424,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "7f3de2d1-dc69-4e1b-8b52-0059e68bab56",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "### 3. 이전 기사 필터링",
+        "height": 416,
+        "width": 432
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1488,
+        80
+      ],
+      "typeVersion": 1,
+      "id": "5c358dac-c0d0-46bb-97e3-82fb482f4dc2",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1408,
+        1200
+      ],
+      "id": "b4e98fd2-85b0-4007-89df-bc60af248e4b",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "뉴스 자동화 브리핑 워크플로우"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.yna.co.kr/rss/international.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        -144
+      ],
+      "id": "52efbcf4-19f0-4f13-9423-e8e2e76caab1",
+      "name": "연합뉴스 세계"
+    },
+    {
+      "parameters": {
+        "batchSize": 20,
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2080,
+        656
+      ],
+      "id": "c69a7881-b89b-4cb5-9dbb-247cacdbe724",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "maxItems": 2
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        416
+      ],
+      "id": "9cc1bfd6-549e-4f51-87be-7189c6d993bd",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "content": "### TEST LIMIT",
+        "height": 208,
+        "width": 192,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1040,
+        368
+      ],
+      "typeVersion": 1,
+      "id": "dc39e66c-3c7a-4b1a-b87c-be037a251d4b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "뉴스 아카이브",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "뉴스 아카이브",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $json.article_date }}",
+            "title": "={{ $json.title }}",
+            "url": "={{ $json.article_url }}",
+            "source": "={{ $json.source }}",
+            "country": "={{ $json.country }}",
+            "subject": "={{ $json.subject }}",
+            "score": "={{ $json.score }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "country",
+              "displayName": "country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "7a52121b-38d4-44d8-a719-f1ae460ab435",
+      "name": "Archive To Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5072,
+        -80
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4816,
+        112
+      ],
+      "id": "537fe083-eca1-4ffc-a815-2a3b83a24a2e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "content": "## Labeling - Country",
+        "height": 464,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1312,
+        896
+      ],
+      "typeVersion": 1,
+      "id": "d437b85e-009d-4e70-813d-5601cf35e30c",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## NEWS 수집",
+        "height": 816,
+        "width": 416,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        176,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "a77e7263-ed4c-4452-88c9-449d7ec67fb8",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ad3f8db-f5cb-499e-a3da-771e3f1c7678",
+              "name": "index",
+              "value": "={{ $itemIndex + 1 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        144
+      ],
+      "id": "ed496ea4-ebd7-4d35-94d4-7fbca64afc56",
+      "name": "Indexing"
+    },
+    {
+      "parameters": {
+        "content": "## Filtering",
+        "height": 928,
+        "width": 1840,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1328,
+        -336
+      ],
+      "typeVersion": 1,
+      "id": "7403f0aa-b626-43e8-828c-3918c608329b",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "node-set-yonhap-source",
+              "name": "source",
+              "value": "yonhap",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "ade042e2-b3a1-4337-b12f-54ebb83963d7",
+      "name": "Set Yonhap Source1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1904,
+        1200
+      ],
+      "id": "3ee0378f-8e03-40dc-9b91-03d1aa378d66",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "뉴스 자동화 브리핑 워크플로우"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Labeling  - Subject",
+        "height": 464,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1808,
+        896
+      ],
+      "typeVersion": 1,
+      "id": "79857691-4700-4478-9a16-15a8b362941b",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2400,
+        1200
+      ],
+      "id": "32268166-3400-4f73-95e1-f3ac711e48a0",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "뉴스 자동화 브리핑 워크플로우"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Scoring",
+        "height": 464,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2304,
+        896
+      ],
+      "typeVersion": 1,
+      "id": "4fcecdfc-f87b-4ff8-b3b1-0235c5e90d37",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet table = \"| index | title | content |\\n|---|---|---|\\n\";\n\nitems.forEach(item => {\n  const idx = item.json.index ?? '';\n  const title = (item.json.title || '').replace(/\\|/g, '／').replace(/[\\n\\r]+/g, ' ');\n  const content = (item.json.content || '').replace(/\\|/g, '／').replace(/[\\n\\r]+/g, ' ').substring(0, 400);\n  table += `| ${idx} | ${title} | ${content} |\\n`;\n});\n\nreturn [{ json: { table } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        1008
+      ],
+      "id": "21b43f2d-a301-455f-8dbd-1f58a96fa7e2",
+      "name": "Convert to table"
+    },
+    {
+      "parameters": {
+        "jsCode": "const tableText = $input.first().json.output || '';\n\nconst lines = tableText.trim().split('\\n')\n  .map(l => l.trim())\n  .filter(l => l.startsWith('|') && !/^\\|[\\s\\-|]+\\|$/.test(l));\n\nif (lines.length < 2) {\n  return [{ json: { error: 'Table parse failed', raw: tableText } }];\n}\n\nconst headers = lines[0].split('|').slice(1, -1).map(h => h.trim());\n\nreturn lines.slice(1).map(line => {\n  const cells = line.split('|').slice(1, -1).map(c => c.trim());\n  const obj = {};\n  headers.forEach((h, i) => {\n    const val = cells[i] ?? '';\n    const num = Number(val);\n    obj[h] = val !== '' && !isNaN(num) ? num : val;\n  });\n  return { json: obj };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        1008
+      ],
+      "id": "d439ea95-a21a-4a75-b680-d608477467f8",
+      "name": "Convert to item"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.table }}",
+        "options": {
+          "systemMessage": "당신은 금융 뉴스 분류 AI입니다.\n\n아래 마크다운 테이블의 각 기사를 보고, index 바로 다음에 \"country\" 컬럼을 추가하세요.\n\ncountry :\n미국 / 중국 / 한국 / 기타\n\n출력 규칙:\n- 마크다운 테이블만 출력 (설명 금지)\n- 기존 데이터 절대 수정 금지\n- 형식: | index | title | content | country |\n- 구분선: |---|---|---|---|\n\n"
+        }
+      },
+      "id": "node-ai-country-classifier",
+      "name": "AI Country Classifier",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1408,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "당신은 한국 증시 뉴스 분류 AI입니다.\n\n아래 마크다운 테이블에 country 다음에 \"subject\" 컬럼을 추가하세요.\n\n분류 (반드시 아래 3개 중 하나):\n- 정치/외교: 정치 이벤트, 국제관계, 외교, 무역\n- 통화/경제: 통화정책, 금리, 인플레이션, GDP, 고용, 중앙은행, 거시경제\n- 산업/종목: 산업 동향, 개별 기업, 실적, 주가, 섹터, 기업 이벤트\n\n출력 규칙:\n- 마크다운 테이블만 출력 (설명 금지)\n- 기존 데이터 절대 수정 금지\n- 형식: | index | title | content | country | subject |\n- 구분선: |---|---|---|---|---|"
+        }
+      },
+      "id": "ba0d4bd8-e432-42e5-a1d1-eabe87b36ae4",
+      "name": "AI subject Classifier",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1904,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "당신은 한국 증시 영향도 분석 AI입니다.\n\n아래 마크다운 테이블에 content 뒤에 relevance, urgency, score 컬럼을 추가하세요.\n\n평가 기준:\n- relevance (1~10): 한국 증시(KOSPI/KOSDAQ) 직접 관련도\n  1=무관, 5=간접 영향, 10=한국 증시 직결\n- urgency (1~10): 시장 영향의 시급성\n  1=장기 추세(수개월+), 5=단기(수일~수주), 10=즉각 반응 예상\n- score: relevance × urgency (직접 계산)\n\n출력 규칙:\n- 마크다운 테이블만 출력 (설명 금지)\n- 기존 데이터 절대 수정 금지\n- 형식: | index | title | content | country | subject | relevance | urgency | score |\n- 구분선: |---|---|---|---|---|---|---|---|\n"
+        }
+      },
+      "id": "292b4e7a-47a2-4d04-a10a-d927f2fc8053",
+      "name": "AI Scoring",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        2400,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-usa",
+                    "leftValue": "={{ $json.subject }}",
+                    "rightValue": "정치/외교",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "정치/외교"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-china",
+                    "leftValue": "={{ $json.subject }}",
+                    "rightValue": "통화/경제",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "통화/경제"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "540ab5ce-0957-43e2-9b15-39bb04c23595",
+                    "leftValue": "={{ $json.subject }}",
+                    "rightValue": "산업/종목",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "산업/종목"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b40c8b5f-d733-4e6e-b6dc-aeba55dbfeab",
+      "name": "Switch By Subject_USA",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        2480,
+        -176
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-usa",
+                    "leftValue": "={{ $json.subject }}",
+                    "rightValue": "정치/외교",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "정치/외교"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-china",
+                    "leftValue": "={{ $json.subject }}",
+                    "rightValue": "통화/경제",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "통화/경제"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "540ab5ce-0957-43e2-9b15-39bb04c23595",
+                    "leftValue": "={{ $json.subject }}",
+                    "rightValue": "산업/종목",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "산업/종목"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "57a6e715-9f8f-4143-860b-a1e81558c143",
+      "name": "Switch By Subject_Korea",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        2480,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 1; // 원하는 개수로 변경\n\nconst items = $input.all();\n\nconst topN = items\n  .sort((a, b) => (b.json.score || 0) - (a.json.score || 0))\n  .slice(0, N);\n\nreturn topN.map(item => ({ json: item.json }));\n"
+      },
+      "id": "75723b71-6804-444e-872a-c0b6b11e9d5f",
+      "name": "Top N USA1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 1; // 원하는 개수로 변경\n\nconst items = $input.all();\n\nconst topN = items\n  .sort((a, b) => (b.json.score || 0) - (a.json.score || 0))\n  .slice(0, N);\n\nreturn topN.map(item => ({ json: item.json }));\n"
+      },
+      "id": "1d913a42-47cf-41e6-866a-977dab64e600",
+      "name": "Top N USA2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 1; // 원하는 개수로 변경\n\nconst items = $input.all();\n\nconst topN = items\n  .sort((a, b) => (b.json.score || 0) - (a.json.score || 0))\n  .slice(0, N);\n\nreturn topN.map(item => ({ json: item.json }));\n"
+      },
+      "id": "d763a3d9-93eb-47da-8592-e81904b48817",
+      "name": "Top N USA3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 1; // 원하는 개수로 변경\n\nconst items = $input.all();\n\nconst topN = items\n  .sort((a, b) => (b.json.score || 0) - (a.json.score || 0))\n  .slice(0, N);\n\nreturn topN.map(item => ({ json: item.json }));\n"
+      },
+      "id": "cb0c814f-c76f-4d30-8f07-1fa16cc6cf29",
+      "name": "Top N Korea2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 1; // 원하는 개수로 변경\n\nconst items = $input.all();\n\nconst topN = items\n  .sort((a, b) => (b.json.score || 0) - (a.json.score || 0))\n  .slice(0, N);\n\nreturn topN.map(item => ({ json: item.json }));\n"
+      },
+      "id": "8eab33ae-7437-4086-9146-d871dbf20984",
+      "name": "Top N Korea3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 1; // 원하는 개수로 변경\n\nconst items = $input.all();\n\nconst topN = items\n  .sort((a, b) => (b.json.score || 0) - (a.json.score || 0))\n  .slice(0, N);\n\nreturn topN.map(item => ({ json: item.json }));\n"
+      },
+      "id": "ca0afc23-13cd-4b96-bd96-d535f9269e43",
+      "name": "Top N Korea1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-usa",
+                    "leftValue": "={{ $json.source }}",
+                    "rightValue": "yonhap",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Yonhap"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-china",
+                    "leftValue": "={{ $json.source }}",
+                    "rightValue": "cnbc",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CNBC"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "rule-korea",
+                    "leftValue": "={{ $json.source }}",
+                    "rightValue": "yahoo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Yahoo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7b9253e6-8f5e-4408-8bf4-b1fb158bb660",
+      "name": "Switch By Source",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        3888,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.article_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        4176,
+        -64
+      ],
+      "id": "8488c885-c13f-4a8a-b54f-11c932a19834",
+      "name": "HTTP Request Yonhap"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "content",
+              "cssSelector": "#articleWrap > div.story-news.article"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        4352,
+        -64
+      ],
+      "id": "207e2de4-5bc0-4fe0-83a3-18eac07b112d",
+      "name": "HTML Yonhap"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.article_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        4176,
+        128
+      ],
+      "id": "97eaa9ab-6909-434b-a341-c3c29d559027",
+      "name": "HTTP Request CNBC"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "content",
+              "cssSelector": "=.ArticleBody-articleBody"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        4352,
+        128
+      ],
+      "id": "97270cfc-78eb-4afa-bf4b-68362f69e62b",
+      "name": "HTML CNBC"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.article_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        4176,
+        320
+      ],
+      "id": "59fd5122-f3d5-40e9-8d2d-0b2fe47e72b2",
+      "name": "HTTP Request Yahoo"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "content",
+              "cssSelector": "#article-body"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        4352,
+        320
+      ],
+      "id": "15d60a5e-e719-4aa9-9f54-48795b2e75eb",
+      "name": "HTML Yahoo"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4544,
+        -64
+      ],
+      "id": "7ca8f908-f4e0-4510-bb89-d80ecf506ee6",
+      "name": "Merge yonhap",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4544,
+        128
+      ],
+      "id": "aa2d1727-5069-48c6-afb7-8130a49ecf8d",
+      "name": "Merge cnbc",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4544,
+        320
+      ],
+      "id": "4c6b557d-1008-4bdd-aa8b-b7d7e458b5c1",
+      "name": "Merge yahoo",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        5408,
+        128
+      ],
+      "id": "c4f40b61-4541-4aa8-8ca8-df8cdb869a99",
+      "name": "Merge cnbc1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "content": "## HTML 수집",
+        "height": 656,
+        "width": 592,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4112,
+        -144
+      ],
+      "typeVersion": 1,
+      "id": "9914c142-5c6e-42bf-93e8-b5d636d8d8b0",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Re-indexing",
+        "height": 304,
+        "width": 432
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3312,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "776c0f09-f240-4e3d-bf9c-995d060525f4",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aa6e8c3d-f845-4218-adc7-9dac02e363f8",
+              "name": "index",
+              "value": "={{ $json.index }}",
+              "type": "number"
+            },
+            {
+              "id": "831ea18f-b1f7-48ed-9e20-a277dc6a7fca",
+              "name": "source",
+              "value": "={{ $json.source }}",
+              "type": "string"
+            },
+            {
+              "id": "e142bf3f-6f30-45f4-b2e1-bb35dc6dcc42",
+              "name": "article_date",
+              "value": "={{ $json.article_date }}",
+              "type": "string"
+            },
+            {
+              "id": "b85b80e4-971a-441a-962d-1a67b4dbed5b",
+              "name": "article_url",
+              "value": "={{ $json.article_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3360,
+        256
+      ],
+      "id": "2b7bc3f5-17ac-4b3e-b2b9-97b1c7640559",
+      "name": "source_date_url"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "index",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3568,
+        256
+      ],
+      "id": "ca7e7817-5114-4061-b498-f783a811db12",
+      "name": "source_date_url_Merge",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "content": "### 2. 속보, 특징주, 뉴스, 쇼츠 필터링",
+        "height": 208,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1760,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "e64505b8-c2d6-4c7f-a939-c7aa522fffb2",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ $json.title }}\n\n{{ $json.link }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": false
+        }
+      },
+      "id": "23e5bd30-6bc3-4416-b04a-f187d2f4c7f6",
+      "name": "텔레그램 속보 알림",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        896
+      ],
+      "webhookId": "3bc5f74a-be70-4826-a0d2-3a8aafec6ab1",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "밑바닥리서치 뉴스 자동화 브리핑 워크플로우"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "feedUrl": "https://www.yna.co.kr/rss/economy.xml"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        736
+      ],
+      "id": "b952f521-056e-4c4b-b4b5-3bc65baed0e4",
+      "name": "연합뉴스 [경제] 속보 Trigger"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "feedUrl": "https://www.yna.co.kr/rss/politics.xml"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        896
+      ],
+      "id": "e6227733-f9ff-49f0-a327-89e5ed0ae7d9",
+      "name": "연합뉴스 [정치] 속보 Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "feedUrl": "https://www.yna.co.kr/rss/international.xml"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        1056
+      ],
+      "id": "781adf27-b9ce-4051-b5c0-ed058f55f0fb",
+      "name": "연합뉴스 [세계] 속보 Trigger"
+    },
+    {
+      "parameters": {
+        "content": "## [속보], [특징주] 브리핑",
+        "height": 544,
+        "width": 784,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        672
+      ],
+      "typeVersion": 1,
+      "id": "6bf430b8-971f-4dd5-a5bc-04753e1dc01b",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "url": "https://www.yna.co.kr/rss/economy.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        48
+      ],
+      "id": "64871357-af5f-4113-a866-c21ba38d7afe",
+      "name": "연합뉴스 경제"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "13bdf795-48d8-408d-a0ea-e6e56d911a27",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[속보]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "70fb48dd-b76f-4d28-aea9-9e5a07a42f8e",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[특징주]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "1460a414-8e49-4094-b841-c84b83d634f1",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[외환]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "32f83b2d-1616-4621-a0ad-f6b26992ae00",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[뉴욕유가]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        896
+      ],
+      "id": "f6a848fd-01af-46ea-8d8d-38bbb956bdf2",
+      "name": "[속보], [특징주] 탐색"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5f244ac4-3c97-4c58-9eae-9cc0b5751bb7",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[속보]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "7bfea582-2a6f-4024-a2ce-db3998841743",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[쇼츠]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "882b7836-8c59-488d-b15b-f15792a42774",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[특징주]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "c283e1b4-1d19-4379-a585-eb11c0e0937d",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[영상]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "546a06b7-7c21-4701-8c31-7e678c7a53a2",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[1보]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "482e1483-ab6e-44e4-9d41-387211bcc0b7",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[2보]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1840,
+        -192
+      ],
+      "id": "d3f898dd-6e3e-446a-8421-7b22e1eaf9e4",
+      "name": "속보, 특징주, 영상, 쇼츠 필터링"
+    },
+    {
+      "parameters": {
+        "jsCode": "const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36';\n\nlet results = [];\nlet debugMsg = '';\n\ntry {\n  const cookieRes = await this.helpers.httpRequest({\n    method: 'GET',\n    url: 'https://fc.yahoo.com',\n    headers: { 'User-Agent': UA },\n    returnFullResponse: true,\n    ignoreHttpStatusErrors: true,\n  });\n  const cookieHeader = cookieRes.headers['set-cookie'];\n  const cookie = (Array.isArray(cookieHeader) ? cookieHeader[0] : (cookieHeader || '')).split(';')[0];\n\n  const crumb = await this.helpers.httpRequest({\n    method: 'GET',\n    url: 'https://query1.finance.yahoo.com/v1/test/getcrumb',\n    headers: { 'User-Agent': UA, 'Cookie': cookie },\n  });\n\n  const symbols = ['^DJI','^GSPC','^IXIC','AAPL','MSFT','GOOGL','AMZN','NVDA','META','TSLA','CL=F','^TNX','KRW=X'];\n  const quoteData = await this.helpers.httpRequest({\n    method: 'GET',\n    url: 'https://query1.finance.yahoo.com/v7/finance/quote',\n    headers: { 'User-Agent': UA, 'Cookie': cookie },\n    qs: { symbols: symbols.join(','), crumb },\n  });\n  results = quoteData?.quoteResponse?.result || [];\n\n} catch (e) {\n  debugMsg = ` (오류: ${e.message})`;\n}\n\nconst q   = (sym) => results.find(r => r.symbol === sym) || {};\nconst pct = (v) => (v != null) ? `${v >= 0 ? '+' : ''}${Number(v).toFixed(2)}%` : 'N/A';\nconst pr  = (v, d = 2) => (v != null) ? Number(v).toFixed(d) : 'N/A';\n\nconst dji  = q('^DJI');\nconst gspc = q('^GSPC');\nconst ixic = q('^IXIC');\nconst aapl = q('AAPL');\nconst msft = q('MSFT');\nconst googl = q('GOOGL');\nconst amzn = q('AMZN');\nconst nvda = q('NVDA');\nconst meta = q('META');\nconst tsla = q('TSLA');\nconst wti  = q('CL=F');\nconst tny  = q('^TNX');\nconst krw  = q('KRW=X');\n\nconst msg =\n  `주요 지수${debugMsg}\\n` +\n  `• 다우 ${pct(dji.regularMarketChangePercent)}\\n` +\n  `• S&P500 ${pct(gspc.regularMarketChangePercent)}\\n` +\n  `• 나스닥 ${pct(ixic.regularMarketChangePercent)}\\n\\n` +\n  `Magnificent 7\\n` +\n  `• 애플 ${pct(aapl.regularMarketChangePercent)}\\n` +\n  `• MS ${pct(msft.regularMarketChangePercent)}\\n` +\n  `• 구글 ${pct(googl.regularMarketChangePercent)}\\n` +\n  `• 아마존 ${pct(amzn.regularMarketChangePercent)}\\n` +\n  `• 엔비디아 ${pct(nvda.regularMarketChangePercent)}\\n` +\n  `• 메타 ${pct(meta.regularMarketChangePercent)}\\n` +\n  `• 테슬라 ${pct(tsla.regularMarketChangePercent)}\\n\\n` +\n  `매크로\\n` +\n  `• WTI ${pr(wti.regularMarketPrice)}달러\\n` +\n  `• 미 10년물 ${pr(tny.regularMarketPrice)}%\\n` +\n  `• 달러/원 ${pr(krw.regularMarketPrice, 1)}원`;\n\nreturn [{ json: { message: msg } }];\n"
+      },
+      "id": "50c154ab-517a-42d9-afde-f38900c9b0b1",
+      "name": "시장 데이터 조회 + 메시지 포맷",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5824,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": false,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "id": "80ca1800-16aa-4e68-9696-31818b7d25c3",
+      "name": "텔레그램 전송",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        6032,
+        -48
+      ],
+      "webhookId": "10d9289b-b2e7-4dd4-9208-e7684b39ee2b",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "밑바닥리서치 뉴스 자동화 브리핑 워크플로우"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### TEST Telegram",
+        "height": 208,
+        "width": 192,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5984,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "71393987-94e6-447a-9d49-8cf78b127121",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "### 시장 데이터 추가",
+        "height": 208,
+        "width": 624
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5552,
+        288
+      ],
+      "typeVersion": 1,
+      "id": "8b6cd238-fad4-4ec6-a831-a9474038b92b",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "59f2b429-5241-489e-b47e-e4d6ca36f58f",
+              "leftValue": "={{ [2,3,4,5,6].includes(new Date().getDay()) }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5600,
+        336
+      ],
+      "id": "1302318d-578d-4799-8572-f1766bdc675a",
+      "name": "주말 제외"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        6032,
+        336
+      ],
+      "id": "8666352c-3223-4db5-b393-de547a751b1a",
+      "name": "Merge market data"
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "연합뉴스 세계",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Archive URLs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "연합뉴스 경제",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "CNBC RSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "주말 제외",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "연합뉴스 세계",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "CNBC RSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Archive URLs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "연합뉴스 경제",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "주말 제외",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CNBC RSS": {
+      "main": [
+        [
+          {
+            "node": "Set CNBC Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Yahoo Finance RSS": {
+      "main": [
+        [
+          {
+            "node": "Set Yahoo Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Yonhap Source": {
+      "main": [
+        [
+          {
+            "node": "Merge News Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set CNBC Source": {
+      "main": [
+        [
+          {
+            "node": "Merge News Sources",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Set Yahoo Source": {
+      "main": [
+        [
+          {
+            "node": "Merge News Sources",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge News Sources": {
+      "main": [
+        [
+          {
+            "node": "Indexing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Article Fields": {
+      "main": [
+        [
+          {
+            "node": "Filter By Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter By Time": {
+      "main": [
+        [
+          {
+            "node": "속보, 특징주, 영상, 쇼츠 필터링",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Archive URLs": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Archive URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Archive URLs": {
+      "main": [
+        [
+          {
+            "node": "Merge Before Dedup",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Before Dedup": {
+      "main": [
+        [
+          {
+            "node": "Filter New Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter New Articles": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "source_date_url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch By Country": {
+      "main": [
+        [
+          {
+            "node": "Switch By Subject_USA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Top N China",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch By Subject_Korea",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Top N Other",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top N China": {
+      "main": [
+        [
+          {
+            "node": "Merge Selected Articles",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Top N Other": {
+      "main": [
+        [
+          {
+            "node": "Merge Selected Articles",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "Merge Selected Articles": {
+      "main": [
+        [
+          {
+            "node": "source_date_url_Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Summary Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Summarizer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Summarizer": {
+      "main": [
+        [
+          {
+            "node": "Merge cnbc1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Parse Summary": {
+      "main": [
+        [
+          {
+            "node": "Merge market data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble Message": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Country Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "연합뉴스 세계": {
+      "main": [
+        [
+          {
+            "node": "Set Yonhap Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Switch By Country",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convert to table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Summarizer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge cnbc1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Archive To Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Indexing": {
+      "main": [
+        [
+          {
+            "node": "Normalize Article Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Yonhap Source1": {
+      "main": [
+        [
+          {
+            "node": "Merge News Sources",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI subject Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Scoring",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to table": {
+      "main": [
+        [
+          {
+            "node": "AI Country Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to item": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Country Classifier": {
+      "main": [
+        [
+          {
+            "node": "AI subject Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI subject Classifier": {
+      "main": [
+        [
+          {
+            "node": "AI Scoring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Scoring": {
+      "main": [
+        [
+          {
+            "node": "Convert to item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch By Subject_USA": {
+      "main": [
+        [
+          {
+            "node": "Top N USA1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Top N USA2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Top N USA3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch By Subject_Korea": {
+      "main": [
+        [
+          {
+            "node": "Top N Korea1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Top N Korea2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Top N Korea3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top N USA1": {
+      "main": [
+        [
+          {
+            "node": "Merge Selected Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top N USA2": {
+      "main": [
+        [
+          {
+            "node": "Merge Selected Articles",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Top N USA3": {
+      "main": [
+        [
+          {
+            "node": "Merge Selected Articles",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Top N Korea1": {
+      "main": [
+        [
+          {
+            "node": "Merge Selected Articles",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Top N Korea2": {
+      "main": [
+        [
+          {
+            "node": "Merge Selected Articles",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Top N Korea3": {
+      "main": [
+        [
+          {
+            "node": "Merge Selected Articles",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "Switch By Source": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Yonhap",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge yonhap",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request CNBC",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge cnbc",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request Yahoo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge yahoo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Yonhap": {
+      "main": [
+        [
+          {
+            "node": "HTML Yonhap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Yonhap": {
+      "main": [
+        [
+          {
+            "node": "Merge yonhap",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request CNBC": {
+      "main": [
+        [
+          {
+            "node": "HTML CNBC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML CNBC": {
+      "main": [
+        [
+          {
+            "node": "Merge cnbc",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request Yahoo": {
+      "main": [
+        [
+          {
+            "node": "HTML Yahoo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Yahoo": {
+      "main": [
+        [
+          {
+            "node": "Merge yahoo",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge yonhap": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge cnbc": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge yahoo": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge cnbc1": {
+      "main": [
+        [
+          {
+            "node": "Parse Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "source_date_url": {
+      "main": [
+        [
+          {
+            "node": "source_date_url_Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "source_date_url_Merge": {
+      "main": [
+        [
+          {
+            "node": "Switch By Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "연합뉴스 [경제] 속보 Trigger": {
+      "main": [
+        [
+          {
+            "node": "[속보], [특징주] 탐색",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "연합뉴스 [정치] 속보 Trigger": {
+      "main": [
+        [
+          {
+            "node": "[속보], [특징주] 탐색",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "연합뉴스 [세계] 속보 Trigger": {
+      "main": [
+        [
+          {
+            "node": "[속보], [특징주] 탐색",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "연합뉴스 경제": {
+      "main": [
+        [
+          {
+            "node": "Set Yonhap Source1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[속보], [특징주] 탐색": {
+      "main": [
+        [
+          {
+            "node": "텔레그램 속보 알림",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "속보, 특징주, 영상, 쇼츠 필터링": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Merge Before Dedup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "시장 데이터 조회 + 메시지 포맷": {
+      "main": [
+        [
+          {
+            "node": "Merge market data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "주말 제외": {
+      "main": [
+        [
+          {
+            "node": "시장 데이터 조회 + 메시지 포맷",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge market data": {
+      "main": [
+        [
+          {
+            "node": "Assemble Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Seoul"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "tags": []
+}
