@@ -3,6 +3,8 @@
 텔레그램으로 보낸 메시지(텍스트/사진/영상/파일)를 GPT로 제목·태그를 생성하고,
 OneDrive를 통해 Obsidian 볼트에 `.md` 파일로 자동 저장하는 n8n 워크플로우입니다.
 
+<img width="2860" height="878" alt="image" src="https://github.com/user-attachments/assets/6868b799-0024-4ad4-82dc-8f3b14043308" />
+
 ---
 
 ## 어떻게 작동하나요?
