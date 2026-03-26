@@ -2,6 +2,8 @@
 
 경제·증시 뉴스를 매일 자동으로 수집·분류·요약하여 텔레그램으로 전송하는 n8n 워크플로우입니다.
 
+<img width="2800" height="847" alt="image" src="https://github.com/user-attachments/assets/57beb185-d8ca-4772-8a23-16e04e6d8328" />
+
 ---
 
 ## 주요 기능
