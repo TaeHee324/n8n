@@ -11,6 +11,25 @@
 |------|------|
 | `projects/news-briefing-automation/` | 경제·증시 뉴스 수집·분석·텔레그램 브리핑 |
 | `projects/telegram-to-obsidian/` | 텔레그램 메시지 → OneDrive → 옵시디언 .md 자동 저장 |
+| `projects/chart-automation/` | 환율·WTI·국채(3·10·30년) 차트 + AI 시황 코멘트 → 텔레그램 전송 |
+
+---
+
+## API 키 및 환경변수
+
+**저장 위치:** `.env` (프로젝트 루트, git에서 제외됨 — `.gitignore` 등록)
+
+| 변수명 | 용도 |
+|--------|------|
+| `N8N_API_KEY` | n8n REST API 인증 (Bearer 토큰) |
+
+**n8n REST API 호출 예시:**
+```bash
+curl -H "X-N8N-API-KEY: $(grep N8N_API_KEY .env | cut -d= -f2)" \
+  https://primary-production-90c7.up.railway.app/api/v1/workflows
+```
+
+**API 키 만료 시:** n8n 우측 상단 프로필 → Settings → API 탭에서 재발급 후 `.env` 업데이트
 
 ---
 
@@ -83,6 +102,26 @@
 - OpenAI API   → [노드명3]
 - OneDrive OAuth2 → [노드명4, 노드명5]
 ```
+
+---
+
+## Git 커밋 규칙
+
+작업 중 아래 시점마다 자동으로 `git commit`을 남긴다. 사용자가 별도로 요청하지 않아도 된다.
+
+| 시점 | 커밋 메시지 예시 |
+|------|----------------|
+| 노드 설계 완료 (워크플로우 생성 직후) | `feat: add [project-name] workflow structure` |
+| 테스트 통과 | `test: verify [project-name] workflow execution` |
+| 에러 수정 완료 | `fix: resolve [node-name] error in [project-name]` |
+| JSON 파일 저장 완료 | `chore: save [project-name] workflow JSON` |
+| 프로젝트 최종 완성 | `feat: complete [project-name] workflow` |
+
+**커밋 규칙:**
+- 커밋 전 반드시 변경 파일 목록을 사용자에게 보여주고 확인 후 진행
+- `git add`는 관련 파일만 선택적으로 추가 (`.env`, 시크릿 파일 제외)
+- 커밋 메시지는 영어로 작성, prefix 사용 (`feat`, `fix`, `chore`, `test`, `docs`)
+- push는 사용자가 명시적으로 요청할 때만 실행
 
 ---
 

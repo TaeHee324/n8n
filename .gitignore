@@ -8,3 +8,8 @@ Thumbs.db
 
 # Claude 개인 설정
 .claude/
+
+# 환경변수 및 API 키 (절대 커밋 금지)
+.env
+.env.local
+*.secret
