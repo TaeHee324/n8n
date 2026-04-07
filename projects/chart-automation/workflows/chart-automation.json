@@ -1,1 +1,2643 @@
-{"updatedAt":"2026-04-07T02:52:23.564Z","createdAt":"2026-04-04T16:57:10.635Z","id":"WW51yZ7oEmyp01kW","name":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","description":null,"active":true,"isArchived":false,"nodes":[{"parameters":{"operation":"append","documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"},"sheetName":{"__rl":true,"value":"gid=0","mode":"list","cachedResultName":"ÌôòÏú®","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=0"},"columns":{"mappingMode":"defineBelow","value":{"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)":"={{ $json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)'] }}","Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)":"={{ $json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)'] }}","DATE":"={{ $json.DATE }}","Comment":"={{ $json.choices[0].message.content }}","category":"={{ $json.category }}"},"matchingColumns":[],"schema":[{"id":"DATE","displayName":"DATE","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)","displayName":"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)","displayName":"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Comment","displayName":"Comment","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"category","displayName":"category","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"id":"n11","name":"Append Exchange Sheet","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2464,32],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"jsCode":"// ÌôòÏú®/Ïú†Í∞Ä/Ï±ÑÍ∂å ÏïÑÏù¥ÌÖú Ìï©ÏÇ∞ -> GPT ÌîÑÎ°¨ÌîÑÌä∏\nconst items = $input.all();\nlet exchangeData = {}, oilData = {}, bondData = {};\nconst newsList = [];\n\nfor (const it of items) {\n  const d = it.json;\n  if (d.category === 'exchange') exchangeData = d;\n  else if (d.category === 'oil') oilData = d;\n  else if (d.category === 'bond') bondData = d;\n  if (d.news_text) newsList.push(d.news_text);\n}\n\nconst today = exchangeData.DATE || oilData.DATE || bondData.DATE\n  || new Date().toISOString().slice(0,10);\n\nconst systemPrompt = 'ÎãπÏã†ÏùÄ ÌïúÍµ≠ Í∏àÏúµÏãúÏû• Ïï†ÎÑêÎ¶¨Ïä§Ìä∏ÏûÖÎãàÎã§. ÏïÑÎûò Í≤ΩÏ†úÏßÄÌëúÏôÄ Îâ¥Ïä§Î•º Î∞îÌÉïÏúºÎ°ú ÏãúÌô© ÏΩîÎ©òÌä∏Î•º ÏûëÏÑ±ÌïòÏÑ∏Ïöî.\\n\\n[ÏûëÏÑ± Í∑úÏπô]\\n- ÌïµÏã¨ Ï£ºÏ≤¥(ÌôòÏú®¬∑Ïú†Í∞Ä¬∑Íµ≠Ï±Ñ)Î•º ÏïûÏóê Ï†úÏãúÌïòÍ≥† ÏâºÌëúÎ°ú Îß•ÎùΩ Ïó∞Í≤∞\\n- Î∞∞Í≤Ω¬∑ÏõêÏù∏ ‚Üí ÌïµÏã¨ ÎÇ¥Ïö© ‚Üí Í≤∞Í≥º¬∑ÏùòÎØ∏¬∑Ï†ÑÎßù ÏàúÏÑúÎ°ú ÏÑúÏà†\\n- Ï¢ÖÍ∞Ä ÏàòÏπò, Î≥ÄÎèôÌè≠, %p Îì± Íµ¨Ï≤¥Ï†Å Ïà´Ïûê Î∞òÎìúÏãú Ìè¨Ìï®\\n- 2~3Î¨∏Ïû•, Í∞Å Î¨∏Ïû• 40Ïûê ÎÇ¥Ïô∏, Ïù¥Î™®ÏßÄ¬∑Ï∂úÏ≤ò ÏóÜÏù¥ Ìïú Îã®ÎùΩ (Ï§ÑÎ∞îÍøà ÏóÜÏùå)\\n- ÏâºÌëúÎ°ú Îß•ÎùΩÏùÑ Ïó∞Í≤∞ÌïòÎ©∞ Î∞ÄÎèÑ ÏûàÍ≤å ÏûëÏÑ±\\n\\n[Ï∂úÎ†• ÌòïÏãù] JSON Ìïú Ï§ÑÎßå Î∞òÌôò, ÏΩîÎìúÎ∏îÎ°ù ÏóÜÏù¥\\n{\"title\": \"ÌïµÏã¨ ÏßÄÌëúÏôÄ Ïù¥ÏäàÎ•º Îã¥ÏùÄ 20Ïûê ÎÇ¥Ïô∏ Ï†úÎ™©\", \"summary\": \"2~3Î¨∏Ïû• Í¥ÄÎ†® ÏΩîÎ©òÌä∏\"}\\n\\n[Ï∂úÎ†• ÏòàÏãú]\\n{\"title\": \"Îã¨Îü¨-Ïõê ÌôòÏú® Í∞ïÎ≥¥Ìï©\", \"summary\": \"Îã¨Îü¨-Ïõê ÌôòÏú®Ïù¥ 1,506.3ÏõêÏúºÎ°ú Ï†ÑÏû• ÎåÄÎπÑ 1.10Ïõê ÏÉÅÏäπ, ÎØ∏Íµ≠Í≥º Ïù¥ÎûÄÏùò Íµ∞ÏÇ¨ Í∏¥Ïû•Ïù¥ ÌôòÏú® Í∞ïÏÑ∏ ÏöîÏù∏ÏúºÎ°ú ÏûëÏö©. ÏßÄÎÇú Ïû•ÏóêÏÑú 1,510.30ÏõêÏúºÎ°ú ÏãúÏûëÌñàÏúºÎÇò ÏµúÏ†Ä 1,503.50ÏõêÍπåÏßÄ ÌïòÎùΩÌïòÎ©∞ 1,505Ïõê Î∂ÄÍ∑ºÏóêÏÑú Îì±ÎùΩÏùÑ Î∞òÎ≥µ. ÏïûÏúºÎ°úÏùò Ïù¥ÎûÄÏùò ÏÉÅÌô©Ïóê Îî∞Îùº Î∂àÌôïÏã§ÏÑ±Ïù¥ ÏßÄÏÜçÎê† Ï†ÑÎßù.\"}';\n\nconst usdKrw = exchangeData['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)'];\nconst wti = oilData['WTIÏú†(NYMEX)'];\nconst b3 = bondData['Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)'];\nconst b10 = bondData['Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)'];\n\nconst userMsg = [\n  'Ïò§Îäò ÎÇ†Ïßú: ' + today,\n  'Îã¨Îü¨-Ïõê ÌôòÏú®(15:30): ' + (usdKrw != null ? usdKrw + 'Ïõê' : 'N/A'),\n  'WTI Ïú†Í∞Ä: $' + (wti != null ? wti : 'N/A'),\n  'Íµ≠Ï±Ñ 3ÎÖÑ: ' + (b3 != null ? b3 + '%' : 'N/A'),\n  'Íµ≠Ï±Ñ 10ÎÖÑ: ' + (b10 != null ? b10 + '%' : 'N/A'),\n  '',\n  'Í¥ÄÎ†® Îâ¥Ïä§:',\n  newsList.join('\\n\\n') || 'Îâ¥Ïä§ ÏóÜÏùå'\n].join('\\n');\n\nconst requestBody = JSON.stringify({\n  model: 'gpt-4o-mini',\n  messages: [\n    { role: 'system', content: systemPrompt },\n    { role: 'user', content: userMsg }\n  ],\n  max_tokens: 600\n});\n\nreturn [{ json: { today, usdKrw, wti, b3, b10, requestBody } }];"},"id":"n14","name":"Build Comment Prompt","type":"n8n-nodes-base.code","typeVersion":2,"position":[1792,416]},{"parameters":{"method":"POST","url":"https://api.openai.com/v1/chat/completions","authentication":"predefinedCredentialType","nodeCredentialType":"openAiApi","sendBody":true,"contentType":"raw","rawContentType":"application/json","body":"={{ $json.requestBody }}","options":{}},"id":"n15","name":"Generate Comment","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[2016,416],"credentials":{"openAiApi":{"id":"UoYETyZhfRGH368H","name":"OpenAi account"}},"onError":"continueRegularOutput"},{"parameters":{"chatId":"=@undergroundresearch36","text":"={{ (() => { try { const raw = $json.choices && $json.choices[0] ? $json.choices[0].message.content : null; if (!raw) return 'ÏãúÌô© ÏΩîÎ©òÌä∏Î•º ÏÉùÏÑ±ÌïòÏßÄ Î™ªÌñàÏäµÎãàÎã§.'; const r = JSON.parse(raw); return r.title + '\\n\\n' + r.summary; } catch(e) { return $json.choices[0].message.content; } })() }}","additionalFields":{"appendAttribution":false}},"id":"n16","name":"Send Comment Text","type":"n8n-nodes-base.telegram","typeVersion":1.2,"position":[4256,176],"webhookId":"b8005ef2-3b26-4dd6-82d8-4a605a75d57e","credentials":{"telegramApi":{"id":"OhTzD6yy7QWhnLZ2","name":"Î∞ëÎ∞îÎã•Î¶¨ÏÑúÏπò Îâ¥Ïä§ ÏûêÎèôÌôî Î∏åÎ¶¨Ìïë ÏõåÌÅ¨ÌîåÎ°úÏö∞"}},"onError":"continueRegularOutput"},{"parameters":{"jsCode":"const items = $input.all();\n\n// Îç∞Ïù¥ÌÑ∞ Î∂ÑÎ•ò Î∞è ÎÇ†Ïßú Ïò§Î¶ÑÏ∞®Ïàú Ï†ïÎ†¨\nconst ÌôòÏú®Data = items\n  .filter(i => i.json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nconst Ïú†Í∞ÄData = items\n  .filter(i => i.json['WTIÏú†(NYMEX)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nconst Íµ≠Í≥†Ï±ÑData = items\n  .filter(i => i.json['Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nfunction buildChart(labels, datasets, title) {\n  return {\n    type: 'line',\n    data: { labels, datasets },\n    options: {\n      title: { display: true, text: title, fontSize: 16 },\n      legend: { display: true },\n      scales: {\n        xAxes: [{ ticks: { maxTicksLimit: 10, maxRotation: 45 } }]\n      }\n    }\n  };\n}\n\nconst charts = [];\n\n// ÌôòÏú® Îç∞Ïù¥ÌÑ∞Í∞Ä ÏûàÏùÑ ÎïåÎßå Ï∂îÍ∞Ä\nif (ÌôòÏú®Data.length > 0) {\n  charts.push({\n    chartName: 'ÌôòÏú®',\n    chart: buildChart(\n      ÌôòÏú®Data.map(i => i.json['DATE']),\n      [\n        {\n          label: 'Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)',\n          data: ÌôòÏú®Data.map(i => parseFloat(i.json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)']) || null),\n          borderColor: '#1565C0',\n          backgroundColor: 'rgba(21,101,192,0.1)',\n          fill: false,\n          tension: 0.1\n        },\n        {\n          label: 'Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)',\n          data: ÌôòÏú®Data.map(i => parseFloat(i.json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)']) || null),\n          borderColor: '#42A5F5',\n          backgroundColor: 'rgba(66,165,245,0.1)',\n          fill: false,\n          tension: 0.1\n        }\n      ],\n      'USD/KRW ÌôòÏú®'\n    )\n  });\n}\n\n// Ïú†Í∞Ä Îç∞Ïù¥ÌÑ∞Í∞Ä ÏûàÏùÑ ÎïåÎßå Ï∂îÍ∞Ä\nif (Ïú†Í∞ÄData.length > 0) {\n  charts.push({\n    chartName: 'Ïú†Í∞Ä',\n    chart: buildChart(\n      Ïú†Í∞ÄData.map(i => i.json['DATE']),\n      [\n        {\n          label: 'WTIÏú†(NYMEX)',\n          data: Ïú†Í∞ÄData.map(i => parseFloat(i.json['WTIÏú†(NYMEX)']) || null),\n          borderColor: '#E65100',\n          backgroundColor: 'rgba(230,81,0,0.1)',\n          fill: true,\n          tension: 0.1\n        }\n      ],\n      'WTI Ïú†Í∞Ä'\n    )\n  });\n}\n\n// Íµ≠Í≥†Ï±Ñ Îç∞Ïù¥ÌÑ∞Í∞Ä ÏûàÏùÑ ÎïåÎßå Ï∂îÍ∞Ä\nif (Íµ≠Í≥†Ï±ÑData.length > 0) {\n  charts.push({\n    chartName: 'Íµ≠Í≥†Ï±Ñ',\n    chart: buildChart(\n      Íµ≠Í≥†Ï±ÑData.map(i => i.json['DATE']),\n      [\n        {\n          label: 'Íµ≠Í≥†Ï±Ñ(3ÎÖÑ)',\n          data: Íµ≠Í≥†Ï±ÑData.map(i => parseFloat(i.json['Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)']) || null),\n          borderColor: '#2E7D32',\n          fill: false,\n          tension: 0.1\n        },\n        {\n          label: 'Íµ≠Í≥†Ï±Ñ(10ÎÖÑ)',\n          data: Íµ≠Í≥†Ï±ÑData.map(i => parseFloat(i.json['Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)']) || null),\n          borderColor: '#FF8F00',\n          fill: false,\n          tension: 0.1\n        },\n      ],\n      'Íµ≠Í≥†Ï±Ñ Í∏àÎ¶¨'\n    )\n  });\n}\n\nreturn charts.map(c => ({\n  json: {\n    chartName: c.chartName,\n    width: 800,\n    height: 400,\n    backgroundColor: 'white',\n    chart: c.chart  // ‚Üê JSON.stringify() Ï†úÍ±∞, Í∞ùÏ≤¥ Í∑∏ÎåÄÎ°ú Ï†ÑÎã¨\n  }\n}));\n"},"id":"n17","name":"Build QuickChart JSON","type":"n8n-nodes-base.code","typeVersion":2,"position":[3360,0]},{"parameters":{"method":"POST","url":"https://quickchart.io/chart/create","sendBody":true,"bodyParameters":{"parameters":[{"name":"chart","value":"={{ $json.chart }}"},{"name":"width","value":"={{ $json.width }}"},{"name":"height","value":"={{ $json.height }}"},{"name":"backgroundColor","value":"={{ $json.backgroundColor }}"}]},"options":{"response":{"response":{"responseFormat":"json"}}}},"id":"n18","name":"Send to QuickChart","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[3584,0]},{"parameters":{"operation":"sendPhoto","chatId":"=@undergroundresearch36","file":"={{ $json.url }}","additionalFields":{}},"id":"n19","name":"Send Chart Photos","type":"n8n-nodes-base.telegram","typeVersion":1.2,"position":[3808,0],"webhookId":"890c0a74-7c94-490d-9b68-1928a34ec86d","credentials":{"telegramApi":{"id":"OhTzD6yy7QWhnLZ2","name":"Î∞ëÎ∞îÎã•Î¶¨ÏÑúÏπò Îâ¥Ïä§ ÏûêÎèôÌôî Î∏åÎ¶¨Ìïë ÏõåÌÅ¨ÌîåÎ°úÏö∞"}}},{"parameters":{"documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"},"sheetName":{"__rl":true,"value":"gid=0","mode":"list","cachedResultName":"ÌôòÏú®","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=0"},"options":{}},"id":"n12","name":"ÌôòÏú® Data","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2912,-160],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"},"sheetName":{"__rl":true,"value":604037688,"mode":"list","cachedResultName":"Ïú†Í∞Ä","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=604037688"},"options":{}},"id":"28d75a01-4031-4768-8150-4a120fdcedcd","name":"Ïú†Í∞Ä Data","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2912,32],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"},"sheetName":{"__rl":true,"value":2013300130,"mode":"list","cachedResultName":"Íµ≠Í≥†Ï±Ñ","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=2013300130"},"options":{}},"id":"74ebc57a-1487-47b8-b36b-1c0da7994685","name":"Íµ≠Í≥†Ï±Ñ Data","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2912,224],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"id":"d837e764-2549-4e8c-b92e-c797cc150a94","leftValue":"={{ $json['DATE'] }}","rightValue":"={{ $now.minus({days: 60}).toFormat('yyyy-MM-dd') }}","operator":{"type":"dateTime","operation":"afterOrEquals"}}],"combinator":"and"},"options":{}},"type":"n8n-nodes-base.filter","typeVersion":2.3,"position":[3136,0],"id":"214fe66e-a8b6-4849-9c2b-8ca5b1737bda","name":"Í∏∞Í∞Ñ ÌïÑÌÑ∞"},{"parameters":{"pollTimes":{"item":[{"mode":"custom","cronExpression":"0 */5 17-20 * * 1-5"}]}},"type":"n8n-nodes-base.rssFeedReadTrigger","typeVersion":1,"position":[224,464],"id":"3960e4f9-651c-4962-9422-57bf4abf6908","name":"RSS Feed Trigger"},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"id":"cond-exchange","leftValue":"={{ $json.title }}","rightValue":"[ÏÑúÌôò-ÎßàÍ∞ê]","operator":{"type":"string","operation":"contains","name":"filter.operator.contains"}},{"id":"cond-bond","leftValue":"={{ $json.title }}","rightValue":"[Ï±ÑÍ∂å-ÎßàÍ∞ê]","operator":{"type":"string","operation":"contains","name":"filter.operator.contains"}},{"id":"cond-oil","leftValue":"={{ $json.title }}","rightValue":"[Îâ¥ÏöïÏú†Í∞Ä]","operator":{"type":"string","operation":"contains","name":"filter.operator.contains"}}],"combinator":"or"},"options":{}},"type":"n8n-nodes-base.filter","typeVersion":2.3,"position":[448,560],"id":"afb7ad63-ed21-4d7b-b8e6-72e15d9ddd70","name":"Filter"},{"parameters":{"jsCode":"// ÌôòÏú® Í∏∞ÏÇ¨ ÌååÏÑú\nconst item = $input.first().json;\nif (item.category !== 'exchange') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ÎÇ†Ïßú: 'ÏûÖÎ†• 2026.04.03'\nconst dateMatch = text.match(/ÏûÖÎ†• (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nconst date = dateMatch ? dateMatch[1]+'-'+dateMatch[2]+'-'+dateMatch[3] : new Date().toISOString().slice(0,10);\n\n// 15:30 Ï†ïÍ∑úÏû• Ï¢ÖÍ∞Ä\nconst c15 = text.match(/Ïò§ÌõÑ 3Ïãú 30Î∂Ñ Í∏∞Ï§ÄÏúºÎ°ú.+?([1-9],?\\d{3}\\.\\d+)ÏõêÏóê Ï†ïÍ∑úÏû•/);\nconst usd_krw_1530 = c15 ? parseFloat(c15[1].replace(/,/g,'')) : null;\n\n// ÏãúÍ∞Ä (Ï†ÑÎÇ† NDF)\nconst cOpen = text.match(/Ï†ÑÎÇ† ÎåÄÎπÑ.+?([1-9],?\\d{3}\\.\\d+)ÏõêÏóêÏÑú Í±∞ÎûòÎ•º ÏãúÏûë/);\nconst usd_krw_0200 = cOpen ? parseFloat(cOpen[1].replace(/,/g,'')) : null;\n\n// Îâ¥Ïä§ ÏöîÏïΩ (Î¶¨Îìú Î¨∏Îã®)\nconst lead = text.match(/\\(ÏÑúÏö∏=Ïó∞Ìï©Ïù∏Ìè¨Îß•Ïä§\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[1].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)': usd_krw_1530,\n  'Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)': usd_krw_0200,\n  news_text: newsText,\n  category: 'exchange'\n}}];"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[1568,32],"id":"5c922a4e-0506-4df3-8402-0b1d9897d5e9","name":"Parse Exchange"},{"parameters":{"jsCode":"// Ïú†Í∞Ä Í∏∞ÏÇ¨ ÌååÏÑú\nconst item = $input.first().json;\nif (item.category !== 'oil') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ÎÇ†Ïßú (Í∏∞ÏÇ¨ ÎÇ†Ïßú - 1Ïùº: Îâ¥Ïöï ÎßàÍ∞êÏùÄ Ï†ÑÎÇ† Í∏∞Ï§Ä)\nconst dateMatch = text.match(/ÏûÖÎ†• (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nlet date;\nif (dateMatch) {\n  const d = new Date(`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`);\n  d.setDate(d.getDate() - 1);\n  date = d.toISOString().slice(0, 10);\n} else {\n  const d = new Date();\n  d.setDate(d.getDate() - 1);\n  date = d.toISOString().slice(0, 10);\n}\n\n// WTI Ï¢ÖÍ∞Ä: 'Î∞∞Îü¥Îãπ 111.54Îã¨Îü¨Ïóê ÎßàÍ∞ê'\nconst wtiMatch = text.match(/Î∞∞Îü¥Îãπ\\s*([\\d,]+\\.?\\d*)\\s*Îã¨Îü¨Ïóê ÎßàÍ∞ê/);\nconst wti = wtiMatch ? parseFloat(wtiMatch[1].replace(/,/g,'')) : null;\n\n// Îâ¥Ïä§ ÏöîÏïΩ\nconst lead = text.match(/\\((Îâ¥Ïöï|ÏÑúÏö∏)=Ïó∞Ìï©[^)]*\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[2].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'WTIÏú†(NYMEX)': wti,\n  news_text: newsText,\n  category: 'oil'\n}}];\n"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[1568,560],"id":"77e950be-59aa-466e-94af-cfa9f744d74b","name":"Parse Oil"},{"parameters":{"jsCode":"// Ï±ÑÍ∂å Í∏∞ÏÇ¨ ÌååÏÑú\nconst item = $input.first().json;\nif (item.category !== 'bond') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ÎÇ†Ïßú\nconst dateMatch = text.match(/ÏûÖÎ†• (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nconst date = dateMatch ? dateMatch[1]+'-'+dateMatch[2]+'-'+dateMatch[3] : new Date().toISOString().slice(0,10);\n\n// 3ÎÖÑÎ¨º\nconst b3 = text.match(/Íµ≠Í≥†Ï±Ñ 3ÎÖÑÎ¨º ÏµúÏ¢ÖÌò∏Í∞Ä ÏàòÏùµÎ•†ÏùÄ[^%]*?(\\d+\\.\\d+)%/);\n// 10ÎÖÑÎ¨º\nconst b10 = text.match(/Íµ≠Í≥†Ï±Ñ 10ÎÖÑÎ¨º Í∏àÎ¶¨Îäî[^%]*?(\\d+\\.\\d+)%/);\n\n// Îâ¥Ïä§ ÏöîÏïΩ\nconst lead = text.match(/\\(ÏÑúÏö∏=Ïó∞Ìï©Ïù∏Ìè¨Îß•Ïä§\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[1].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)': b3 ? parseFloat(b3[1]) : null,\n  'Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)': b10 ? parseFloat(b10[1]) : null,\n  news_text: newsText,\n  category: 'bond'\n}}];"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[1568,880],"id":"f64f37d6-6205-4210-9cae-c32dc4d72ec6","name":"Parse Bond"},{"parameters":{"jsCode":"// Í∏∞ÏÇ¨ Ï†úÎ™©ÏúºÎ°ú category Î∂ÄÏó¨ + URL Ï∂îÏ∂ú\nconst item = $input.first().json;\nconst title = item.title || '';\nconst link = item.link || item.url || item.guid || '';\n\nlet category = null;\nif (title.includes('[ÏÑúÌôò-ÎßàÍ∞ê]')) category = 'exchange';\nelse if (title.includes('[Ï±ÑÍ∂å-ÎßàÍ∞ê]')) category = 'bond';\nelse if (title.includes('[Îâ¥ÏöïÏú†Í∞Ä]')) category = 'oil';\n\nif (!category) return [];\n\nreturn [{ json: { ...item, category, articleUrl: link } }];\n"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[672,560],"id":"1d17bd3c-5186-4be4-901e-26d62ad934a6","name":"ÌÇ§ÏõåÎìúÎ≥Ñ Î∂ÑÎ•ò"},{"parameters":{"pollTimes":{"item":[{"mode":"custom","cronExpression":"0 */5 4-9 * * 2-6"}]}},"id":"rss-s1n9-0001-0001-0001-000000000001","name":"RSS S1N9 (Ïú†Í∞Ä)","type":"n8n-nodes-base.rssFeedReadTrigger","typeVersion":1,"position":[224,656]},{"parameters":{"operation":"append","documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî"},"sheetName":{"__rl":true,"value":604037688,"mode":"list","cachedResultName":"Ïú†Í∞Ä"},"columns":{"mappingMode":"defineBelow","value":{"DATE":"={{ $json.DATE }}","WTIÏú†(NYMEX)":"={{ $json['WTIÏú†(NYMEX)'] }}","Comment":"={{ $json.choices[0].message.content }}","category":"={{ $json.category }}"},"matchingColumns":[],"schema":[{"id":"DATE","displayName":"DATE","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"WTIÏú†(NYMEX)","displayName":"WTIÏú†(NYMEX)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Comment","displayName":"Comment","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"category","displayName":"category","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"id":"append-oil-0001-0001-0001-000000000001","name":"Append Oil Sheet","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2464,592],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"operation":"append","documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî"},"sheetName":{"__rl":true,"value":2013300130,"mode":"list","cachedResultName":"Íµ≠Í≥†Ï±Ñ"},"columns":{"mappingMode":"defineBelow","value":{"DATE":"={{ $json.DATE }}","Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)":"={{ $json['Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)'] }}","Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)":"={{ $json['Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)'] }}","Comment":"={{ $json.choices[0].message.content }}","category":"={{ $json.category }}"},"matchingColumns":[],"schema":[{"id":"DATE","displayName":"DATE","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)","displayName":"Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)","displayName":"Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Comment","displayName":"Comment","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"category","displayName":"category","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"id":"append-bond-001-0001-0001-000000000001","name":"Append Bond Sheet","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2464,784],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"id":"merge-node-001-0001-0001-000000000001","name":"Merge Chart+Comment","type":"n8n-nodes-base.merge","typeVersion":3,"position":[4032,176]},{"parameters":{"url":"={{ $json.articleUrl }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}]},"options":{}},"id":"http-article-nd-0001-0001-000000000001","name":"HTTP Request Article","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[896,640],"onError":"continueRegularOutput"},{"parameters":{"operation":"extractHtmlContent","extractionValues":{"values":[{"key":"content","cssSelector":"#article-view-content-div"}]},"options":{}},"id":"html-extract-nd-0001-0001-000000000001","name":"Extract Article HTML","type":"n8n-nodes-base.html","typeVersion":1.2,"position":[1120,640]},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"id":"merge-article-nd-001-0001-000000000001","name":"Merge Article Data","type":"n8n-nodes-base.merge","typeVersion":3.2,"position":[1344,560]},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"type":"n8n-nodes-base.merge","typeVersion":3.2,"position":[2240,32],"id":"8a3e3163-f861-4b8e-919e-130c92563580","name":"Merge"},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"type":"n8n-nodes-base.merge","typeVersion":3.2,"position":[2240,592],"id":"e00be533-a683-488b-a250-25e3e8a6d07f","name":"Merge1"},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"type":"n8n-nodes-base.merge","typeVersion":3.2,"position":[2240,784],"id":"251cf479-c419-4cc9-adc4-785b8e48ddc6","name":"Merge2"},{"parameters":{"rules":{"values":[{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"leftValue":"={{ $json.category }}","rightValue":"exchange","operator":{"type":"string","operation":"equals"},"id":"42ba8b6f-f42e-442a-85f8-055b87aee03e"}],"combinator":"and"},"renameOutput":true,"outputKey":"Exchange"},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"id":"05bc58e3-2bae-4af0-9df3-59d7a83e1af4","leftValue":"={{ $json.category }}","rightValue":"oil","operator":{"type":"string","operation":"equals"}}],"combinator":"and"},"renameOutput":true,"outputKey":"Oil"},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"id":"f0cb6597-a3c1-41e9-aa26-1bd1753b789c","leftValue":"={{ $json.category }}","rightValue":"bond","operator":{"type":"string","operation":"equals"}}],"combinator":"and"},"renameOutput":true,"outputKey":"Bond"}]},"options":{}},"type":"n8n-nodes-base.switch","typeVersion":3.4,"position":[2688,16],"id":"d5d6087c-5d21-466b-b960-f718cc41a497","name":"Switch"}],"connections":{"RSS Feed Trigger":{"main":[[{"node":"Filter","type":"main","index":0}]]},"RSS S1N9 (Ïú†Í∞Ä)":{"main":[[{"node":"Filter","type":"main","index":0}]]},"Filter":{"main":[[{"node":"ÌÇ§ÏõåÎìúÎ≥Ñ Î∂ÑÎ•ò","type":"main","index":0}]]},"ÌÇ§ÏõåÎìúÎ≥Ñ Î∂ÑÎ•ò":{"main":[[{"node":"HTTP Request Article","type":"main","index":0},{"node":"Merge Article Data","type":"main","index":0}]]},"Parse Exchange":{"main":[[{"node":"Build Comment Prompt","type":"main","index":0},{"node":"Merge","type":"main","index":0}]]},"Parse Oil":{"main":[[{"node":"Build Comment Prompt","type":"main","index":0},{"node":"Merge1","type":"main","index":1}]]},"Parse Bond":{"main":[[{"node":"Build Comment Prompt","type":"main","index":0},{"node":"Merge2","type":"main","index":1}]]},"Append Exchange Sheet":{"main":[[{"node":"Switch","type":"main","index":0}]]},"ÌôòÏú® Data":{"main":[[{"node":"Í∏∞Í∞Ñ ÌïÑÌÑ∞","type":"main","index":0}]]},"Ïú†Í∞Ä Data":{"main":[[{"node":"Í∏∞Í∞Ñ ÌïÑÌÑ∞","type":"main","index":0}]]},"Íµ≠Í≥†Ï±Ñ Data":{"main":[[{"node":"Í∏∞Í∞Ñ ÌïÑÌÑ∞","type":"main","index":0}]]},"Í∏∞Í∞Ñ ÌïÑÌÑ∞":{"main":[[{"node":"Build QuickChart JSON","type":"main","index":0}]]},"Build QuickChart JSON":{"main":[[{"node":"Send to QuickChart","type":"main","index":0}]]},"Send to QuickChart":{"main":[[{"node":"Send Chart Photos","type":"main","index":0}]]},"Send Chart Photos":{"main":[[{"node":"Merge Chart+Comment","type":"main","index":0}]]},"Build Comment Prompt":{"main":[[{"node":"Generate Comment","type":"main","index":0}]]},"Merge Chart+Comment":{"main":[[{"node":"Send Comment Text","type":"main","index":0}]]},"Send Comment Text":{"main":[[]]},"Append Oil Sheet":{"main":[[{"node":"Switch","type":"main","index":0}]]},"Append Bond Sheet":{"main":[[{"node":"Switch","type":"main","index":0}]]},"HTTP Request Article":{"main":[[{"node":"Extract Article HTML","type":"main","index":0}]]},"Extract Article HTML":{"main":[[{"node":"Merge Article Data","type":"main","index":1}]]},"Merge Article Data":{"main":[[{"node":"Parse Exchange","type":"main","index":0},{"node":"Parse Oil","type":"main","index":0},{"node":"Parse Bond","type":"main","index":0}]]},"Generate Comment":{"main":[[{"node":"Merge","type":"main","index":1},{"node":"Merge1","type":"main","index":0},{"node":"Merge2","type":"main","index":0},{"node":"Merge Chart+Comment","type":"main","index":1}]]},"Merge1":{"main":[[{"node":"Append Oil Sheet","type":"main","index":0}]]},"Merge2":{"main":[[{"node":"Append Bond Sheet","type":"main","index":0}]]},"Merge":{"main":[[{"node":"Append Exchange Sheet","type":"main","index":0}]]},"Switch":{"main":[[{"node":"ÌôòÏú® Data","type":"main","index":0}],[{"node":"Ïú†Í∞Ä Data","type":"main","index":0}],[{"node":"Íµ≠Í≥†Ï±Ñ Data","type":"main","index":0}]]}},"settings":{"executionOrder":"v1","callerPolicy":"workflowsFromSameOwner","availableInMCP":false,"timeSavedMode":"fixed","timezone":"Asia/Seoul","binaryMode":"separate"},"staticData":{"node:RSS Feed Trigger":{"lastItemDate":"2026-04-06T10:57:41.000Z"},"node:RSS S1N9 (Ïú†Í∞Ä)":{"lastItemDate":"2026-04-06T10:57:41.000Z"}},"meta":{"templateCredsSetupCompleted":true},"pinData":{},"versionId":"9eac6587-cfb0-4a7f-a99f-fedd9f82bb96","activeVersionId":"9eac6587-cfb0-4a7f-a99f-fedd9f82bb96","versionCounter":406,"triggerCount":2,"shared":[{"updatedAt":"2026-04-04T16:57:10.635Z","createdAt":"2026-04-04T16:57:10.635Z","role":"workflow:owner","workflowId":"WW51yZ7oEmyp01kW","projectId":"B6oTH5ZqWMHh4Gyp","project":{"updatedAt":"2026-03-15T11:11:16.680Z","createdAt":"2026-03-15T11:09:35.937Z","id":"B6oTH5ZqWMHh4Gyp","name":"TaeHee Kim <rlaxogml324@gmail.com>","type":"personal","icon":null,"description":null,"creatorId":"e7556dbf-c6f9-4597-80f7-988115231e21"}}],"tags":[],"activeVersion":{"updatedAt":"2026-04-07T02:52:26.225Z","createdAt":"2026-04-07T02:52:23.567Z","versionId":"9eac6587-cfb0-4a7f-a99f-fedd9f82bb96","workflowId":"WW51yZ7oEmyp01kW","nodes":[{"parameters":{"operation":"append","documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"},"sheetName":{"__rl":true,"value":"gid=0","mode":"list","cachedResultName":"ÌôòÏú®","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=0"},"columns":{"mappingMode":"defineBelow","value":{"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)":"={{ $json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)'] }}","Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)":"={{ $json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)'] }}","DATE":"={{ $json.DATE }}","Comment":"={{ $json.choices[0].message.content }}","category":"={{ $json.category }}"},"matchingColumns":[],"schema":[{"id":"DATE","displayName":"DATE","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)","displayName":"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)","displayName":"Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Comment","displayName":"Comment","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"category","displayName":"category","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"id":"n11","name":"Append Exchange Sheet","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2464,32],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"jsCode":"// ÌôòÏú®/Ïú†Í∞Ä/Ï±ÑÍ∂å ÏïÑÏù¥ÌÖú Ìï©ÏÇ∞ -> GPT ÌîÑÎ°¨ÌîÑÌä∏\nconst items = $input.all();\nlet exchangeData = {}, oilData = {}, bondData = {};\nconst newsList = [];\n\nfor (const it of items) {\n  const d = it.json;\n  if (d.category === 'exchange') exchangeData = d;\n  else if (d.category === 'oil') oilData = d;\n  else if (d.category === 'bond') bondData = d;\n  if (d.news_text) newsList.push(d.news_text);\n}\n\nconst today = exchangeData.DATE || oilData.DATE || bondData.DATE\n  || new Date().toISOString().slice(0,10);\n\nconst systemPrompt = 'ÎãπÏã†ÏùÄ ÌïúÍµ≠ Í∏àÏúµÏãúÏû• Ïï†ÎÑêÎ¶¨Ïä§Ìä∏ÏûÖÎãàÎã§. ÏïÑÎûò Í≤ΩÏ†úÏßÄÌëúÏôÄ Îâ¥Ïä§Î•º Î∞îÌÉïÏúºÎ°ú ÏãúÌô© ÏΩîÎ©òÌä∏Î•º ÏûëÏÑ±ÌïòÏÑ∏Ïöî.\\n\\n[ÏûëÏÑ± Í∑úÏπô]\\n- ÌïµÏã¨ Ï£ºÏ≤¥(ÌôòÏú®¬∑Ïú†Í∞Ä¬∑Íµ≠Ï±Ñ)Î•º ÏïûÏóê Ï†úÏãúÌïòÍ≥† ÏâºÌëúÎ°ú Îß•ÎùΩ Ïó∞Í≤∞\\n- Î∞∞Í≤Ω¬∑ÏõêÏù∏ ‚Üí ÌïµÏã¨ ÎÇ¥Ïö© ‚Üí Í≤∞Í≥º¬∑ÏùòÎØ∏¬∑Ï†ÑÎßù ÏàúÏÑúÎ°ú ÏÑúÏà†\\n- Ï¢ÖÍ∞Ä ÏàòÏπò, Î≥ÄÎèôÌè≠, %p Îì± Íµ¨Ï≤¥Ï†Å Ïà´Ïûê Î∞òÎìúÏãú Ìè¨Ìï®\\n- 2~3Î¨∏Ïû•, Í∞Å Î¨∏Ïû• 40Ïûê ÎÇ¥Ïô∏, Ïù¥Î™®ÏßÄ¬∑Ï∂úÏ≤ò ÏóÜÏù¥ Ìïú Îã®ÎùΩ (Ï§ÑÎ∞îÍøà ÏóÜÏùå)\\n- ÏâºÌëúÎ°ú Îß•ÎùΩÏùÑ Ïó∞Í≤∞ÌïòÎ©∞ Î∞ÄÎèÑ ÏûàÍ≤å ÏûëÏÑ±\\n\\n[Ï∂úÎ†• ÌòïÏãù] JSON Ìïú Ï§ÑÎßå Î∞òÌôò, ÏΩîÎìúÎ∏îÎ°ù ÏóÜÏù¥\\n{\"title\": \"ÌïµÏã¨ ÏßÄÌëúÏôÄ Ïù¥ÏäàÎ•º Îã¥ÏùÄ 20Ïûê ÎÇ¥Ïô∏ Ï†úÎ™©\", \"summary\": \"2~3Î¨∏Ïû• Í¥ÄÎ†® ÏΩîÎ©òÌä∏\"}\\n\\n[Ï∂úÎ†• ÏòàÏãú]\\n{\"title\": \"Îã¨Îü¨-Ïõê ÌôòÏú® Í∞ïÎ≥¥Ìï©\", \"summary\": \"Îã¨Îü¨-Ïõê ÌôòÏú®Ïù¥ 1,506.3ÏõêÏúºÎ°ú Ï†ÑÏû• ÎåÄÎπÑ 1.10Ïõê ÏÉÅÏäπ, ÎØ∏Íµ≠Í≥º Ïù¥ÎûÄÏùò Íµ∞ÏÇ¨ Í∏¥Ïû•Ïù¥ ÌôòÏú® Í∞ïÏÑ∏ ÏöîÏù∏ÏúºÎ°ú ÏûëÏö©. ÏßÄÎÇú Ïû•ÏóêÏÑú 1,510.30ÏõêÏúºÎ°ú ÏãúÏûëÌñàÏúºÎÇò ÏµúÏ†Ä 1,503.50ÏõêÍπåÏßÄ ÌïòÎùΩÌïòÎ©∞ 1,505Ïõê Î∂ÄÍ∑ºÏóêÏÑú Îì±ÎùΩÏùÑ Î∞òÎ≥µ. ÏïûÏúºÎ°úÏùò Ïù¥ÎûÄÏùò ÏÉÅÌô©Ïóê Îî∞Îùº Î∂àÌôïÏã§ÏÑ±Ïù¥ ÏßÄÏÜçÎê† Ï†ÑÎßù.\"}';\n\nconst usdKrw = exchangeData['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)'];\nconst wti = oilData['WTIÏú†(NYMEX)'];\nconst b3 = bondData['Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)'];\nconst b10 = bondData['Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)'];\n\nconst userMsg = [\n  'Ïò§Îäò ÎÇ†Ïßú: ' + today,\n  'Îã¨Îü¨-Ïõê ÌôòÏú®(15:30): ' + (usdKrw != null ? usdKrw + 'Ïõê' : 'N/A'),\n  'WTI Ïú†Í∞Ä: $' + (wti != null ? wti : 'N/A'),\n  'Íµ≠Ï±Ñ 3ÎÖÑ: ' + (b3 != null ? b3 + '%' : 'N/A'),\n  'Íµ≠Ï±Ñ 10ÎÖÑ: ' + (b10 != null ? b10 + '%' : 'N/A'),\n  '',\n  'Í¥ÄÎ†® Îâ¥Ïä§:',\n  newsList.join('\\n\\n') || 'Îâ¥Ïä§ ÏóÜÏùå'\n].join('\\n');\n\nconst requestBody = JSON.stringify({\n  model: 'gpt-4o-mini',\n  messages: [\n    { role: 'system', content: systemPrompt },\n    { role: 'user', content: userMsg }\n  ],\n  max_tokens: 600\n});\n\nreturn [{ json: { today, usdKrw, wti, b3, b10, requestBody } }];"},"id":"n14","name":"Build Comment Prompt","type":"n8n-nodes-base.code","typeVersion":2,"position":[1792,416]},{"parameters":{"method":"POST","url":"https://api.openai.com/v1/chat/completions","authentication":"predefinedCredentialType","nodeCredentialType":"openAiApi","sendBody":true,"contentType":"raw","rawContentType":"application/json","body":"={{ $json.requestBody }}","options":{}},"id":"n15","name":"Generate Comment","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[2016,416],"credentials":{"openAiApi":{"id":"UoYETyZhfRGH368H","name":"OpenAi account"}},"onError":"continueRegularOutput"},{"parameters":{"chatId":"=@undergroundresearch36","text":"={{ (() => { try { const raw = $json.choices && $json.choices[0] ? $json.choices[0].message.content : null; if (!raw) return 'ÏãúÌô© ÏΩîÎ©òÌä∏Î•º ÏÉùÏÑ±ÌïòÏßÄ Î™ªÌñàÏäµÎãàÎã§.'; const r = JSON.parse(raw); return r.title + '\\n\\n' + r.summary; } catch(e) { return $json.choices[0].message.content; } })() }}","additionalFields":{"appendAttribution":false}},"id":"n16","name":"Send Comment Text","type":"n8n-nodes-base.telegram","typeVersion":1.2,"position":[4256,176],"webhookId":"b8005ef2-3b26-4dd6-82d8-4a605a75d57e","credentials":{"telegramApi":{"id":"OhTzD6yy7QWhnLZ2","name":"Î∞ëÎ∞îÎã•Î¶¨ÏÑúÏπò Îâ¥Ïä§ ÏûêÎèôÌôî Î∏åÎ¶¨Ìïë ÏõåÌÅ¨ÌîåÎ°úÏö∞"}},"onError":"continueRegularOutput"},{"parameters":{"jsCode":"const items = $input.all();\n\n// Îç∞Ïù¥ÌÑ∞ Î∂ÑÎ•ò Î∞è ÎÇ†Ïßú Ïò§Î¶ÑÏ∞®Ïàú Ï†ïÎ†¨\nconst ÌôòÏú®Data = items\n  .filter(i => i.json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nconst Ïú†Í∞ÄData = items\n  .filter(i => i.json['WTIÏú†(NYMEX)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nconst Íµ≠Í≥†Ï±ÑData = items\n  .filter(i => i.json['Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nfunction buildChart(labels, datasets, title) {\n  return {\n    type: 'line',\n    data: { labels, datasets },\n    options: {\n      title: { display: true, text: title, fontSize: 16 },\n      legend: { display: true },\n      scales: {\n        xAxes: [{ ticks: { maxTicksLimit: 10, maxRotation: 45 } }]\n      }\n    }\n  };\n}\n\nconst charts = [];\n\n// ÌôòÏú® Îç∞Ïù¥ÌÑ∞Í∞Ä ÏûàÏùÑ ÎïåÎßå Ï∂îÍ∞Ä\nif (ÌôòÏú®Data.length > 0) {\n  charts.push({\n    chartName: 'ÌôòÏú®',\n    chart: buildChart(\n      ÌôòÏú®Data.map(i => i.json['DATE']),\n      [\n        {\n          label: 'Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)',\n          data: ÌôòÏú®Data.map(i => parseFloat(i.json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)']) || null),\n          borderColor: '#1565C0',\n          backgroundColor: 'rgba(21,101,192,0.1)',\n          fill: false,\n          tension: 0.1\n        },\n        {\n          label: 'Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)',\n          data: ÌôòÏú®Data.map(i => parseFloat(i.json['Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)']) || null),\n          borderColor: '#42A5F5',\n          backgroundColor: 'rgba(66,165,245,0.1)',\n          fill: false,\n          tension: 0.1\n        }\n      ],\n      'USD/KRW ÌôòÏú®'\n    )\n  });\n}\n\n// Ïú†Í∞Ä Îç∞Ïù¥ÌÑ∞Í∞Ä ÏûàÏùÑ ÎïåÎßå Ï∂îÍ∞Ä\nif (Ïú†Í∞ÄData.length > 0) {\n  charts.push({\n    chartName: 'Ïú†Í∞Ä',\n    chart: buildChart(\n      Ïú†Í∞ÄData.map(i => i.json['DATE']),\n      [\n        {\n          label: 'WTIÏú†(NYMEX)',\n          data: Ïú†Í∞ÄData.map(i => parseFloat(i.json['WTIÏú†(NYMEX)']) || null),\n          borderColor: '#E65100',\n          backgroundColor: 'rgba(230,81,0,0.1)',\n          fill: true,\n          tension: 0.1\n        }\n      ],\n      'WTI Ïú†Í∞Ä'\n    )\n  });\n}\n\n// Íµ≠Í≥†Ï±Ñ Îç∞Ïù¥ÌÑ∞Í∞Ä ÏûàÏùÑ ÎïåÎßå Ï∂îÍ∞Ä\nif (Íµ≠Í≥†Ï±ÑData.length > 0) {\n  charts.push({\n    chartName: 'Íµ≠Í≥†Ï±Ñ',\n    chart: buildChart(\n      Íµ≠Í≥†Ï±ÑData.map(i => i.json['DATE']),\n      [\n        {\n          label: 'Íµ≠Í≥†Ï±Ñ(3ÎÖÑ)',\n          data: Íµ≠Í≥†Ï±ÑData.map(i => parseFloat(i.json['Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)']) || null),\n          borderColor: '#2E7D32',\n          fill: false,\n          tension: 0.1\n        },\n        {\n          label: 'Íµ≠Í≥†Ï±Ñ(10ÎÖÑ)',\n          data: Íµ≠Í≥†Ï±ÑData.map(i => parseFloat(i.json['Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)']) || null),\n          borderColor: '#FF8F00',\n          fill: false,\n          tension: 0.1\n        },\n      ],\n      'Íµ≠Í≥†Ï±Ñ Í∏àÎ¶¨'\n    )\n  });\n}\n\nreturn charts.map(c => ({\n  json: {\n    chartName: c.chartName,\n    width: 800,\n    height: 400,\n    backgroundColor: 'white',\n    chart: c.chart  // ‚Üê JSON.stringify() Ï†úÍ±∞, Í∞ùÏ≤¥ Í∑∏ÎåÄÎ°ú Ï†ÑÎã¨\n  }\n}));\n"},"id":"n17","name":"Build QuickChart JSON","type":"n8n-nodes-base.code","typeVersion":2,"position":[3360,0]},{"parameters":{"method":"POST","url":"https://quickchart.io/chart/create","sendBody":true,"bodyParameters":{"parameters":[{"name":"chart","value":"={{ $json.chart }}"},{"name":"width","value":"={{ $json.width }}"},{"name":"height","value":"={{ $json.height }}"},{"name":"backgroundColor","value":"={{ $json.backgroundColor }}"}]},"options":{"response":{"response":{"responseFormat":"json"}}}},"id":"n18","name":"Send to QuickChart","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[3584,0]},{"parameters":{"operation":"sendPhoto","chatId":"=@undergroundresearch36","file":"={{ $json.url }}","additionalFields":{}},"id":"n19","name":"Send Chart Photos","type":"n8n-nodes-base.telegram","typeVersion":1.2,"position":[3808,0],"webhookId":"890c0a74-7c94-490d-9b68-1928a34ec86d","credentials":{"telegramApi":{"id":"OhTzD6yy7QWhnLZ2","name":"Î∞ëÎ∞îÎã•Î¶¨ÏÑúÏπò Îâ¥Ïä§ ÏûêÎèôÌôî Î∏åÎ¶¨Ìïë ÏõåÌÅ¨ÌîåÎ°úÏö∞"}}},{"parameters":{"documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"},"sheetName":{"__rl":true,"value":"gid=0","mode":"list","cachedResultName":"ÌôòÏú®","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=0"},"options":{}},"id":"n12","name":"ÌôòÏú® Data","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2912,-160],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"},"sheetName":{"__rl":true,"value":604037688,"mode":"list","cachedResultName":"Ïú†Í∞Ä","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=604037688"},"options":{}},"id":"28d75a01-4031-4768-8150-4a120fdcedcd","name":"Ïú†Í∞Ä Data","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2912,32],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"},"sheetName":{"__rl":true,"value":2013300130,"mode":"list","cachedResultName":"Íµ≠Í≥†Ï±Ñ","cachedResultUrl":"https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=2013300130"},"options":{}},"id":"74ebc57a-1487-47b8-b36b-1c0da7994685","name":"Íµ≠Í≥†Ï±Ñ Data","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2912,224],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"id":"d837e764-2549-4e8c-b92e-c797cc150a94","leftValue":"={{ $json['DATE'] }}","rightValue":"={{ $now.minus({days: 60}).toFormat('yyyy-MM-dd') }}","operator":{"type":"dateTime","operation":"afterOrEquals"}}],"combinator":"and"},"options":{}},"type":"n8n-nodes-base.filter","typeVersion":2.3,"position":[3136,0],"id":"214fe66e-a8b6-4849-9c2b-8ca5b1737bda","name":"Í∏∞Í∞Ñ ÌïÑÌÑ∞"},{"parameters":{"pollTimes":{"item":[{"mode":"custom","cronExpression":"0 */5 17-20 * * 1-5"}]}},"type":"n8n-nodes-base.rssFeedReadTrigger","typeVersion":1,"position":[224,464],"id":"3960e4f9-651c-4962-9422-57bf4abf6908","name":"RSS Feed Trigger"},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"id":"cond-exchange","leftValue":"={{ $json.title }}","rightValue":"[ÏÑúÌôò-ÎßàÍ∞ê]","operator":{"type":"string","operation":"contains","name":"filter.operator.contains"}},{"id":"cond-bond","leftValue":"={{ $json.title }}","rightValue":"[Ï±ÑÍ∂å-ÎßàÍ∞ê]","operator":{"type":"string","operation":"contains","name":"filter.operator.contains"}},{"id":"cond-oil","leftValue":"={{ $json.title }}","rightValue":"[Îâ¥ÏöïÏú†Í∞Ä]","operator":{"type":"string","operation":"contains","name":"filter.operator.contains"}}],"combinator":"or"},"options":{}},"type":"n8n-nodes-base.filter","typeVersion":2.3,"position":[448,560],"id":"afb7ad63-ed21-4d7b-b8e6-72e15d9ddd70","name":"Filter"},{"parameters":{"jsCode":"// ÌôòÏú® Í∏∞ÏÇ¨ ÌååÏÑú\nconst item = $input.first().json;\nif (item.category !== 'exchange') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ÎÇ†Ïßú: 'ÏûÖÎ†• 2026.04.03'\nconst dateMatch = text.match(/ÏûÖÎ†• (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nconst date = dateMatch ? dateMatch[1]+'-'+dateMatch[2]+'-'+dateMatch[3] : new Date().toISOString().slice(0,10);\n\n// 15:30 Ï†ïÍ∑úÏû• Ï¢ÖÍ∞Ä\nconst c15 = text.match(/Ïò§ÌõÑ 3Ïãú 30Î∂Ñ Í∏∞Ï§ÄÏúºÎ°ú.+?([1-9],?\\d{3}\\.\\d+)ÏõêÏóê Ï†ïÍ∑úÏû•/);\nconst usd_krw_1530 = c15 ? parseFloat(c15[1].replace(/,/g,'')) : null;\n\n// ÏãúÍ∞Ä (Ï†ÑÎÇ† NDF)\nconst cOpen = text.match(/Ï†ÑÎÇ† ÎåÄÎπÑ.+?([1-9],?\\d{3}\\.\\d+)ÏõêÏóêÏÑú Í±∞ÎûòÎ•º ÏãúÏûë/);\nconst usd_krw_0200 = cOpen ? parseFloat(cOpen[1].replace(/,/g,'')) : null;\n\n// Îâ¥Ïä§ ÏöîÏïΩ (Î¶¨Îìú Î¨∏Îã®)\nconst lead = text.match(/\\(ÏÑúÏö∏=Ïó∞Ìï©Ïù∏Ìè¨Îß•Ïä§\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[1].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 15:30)': usd_krw_1530,\n  'Ïõê/Îã¨Îü¨(Ï¢ÖÍ∞Ä 02:00)': usd_krw_0200,\n  news_text: newsText,\n  category: 'exchange'\n}}];"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[1568,32],"id":"5c922a4e-0506-4df3-8402-0b1d9897d5e9","name":"Parse Exchange"},{"parameters":{"jsCode":"// Ïú†Í∞Ä Í∏∞ÏÇ¨ ÌååÏÑú\nconst item = $input.first().json;\nif (item.category !== 'oil') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ÎÇ†Ïßú (Í∏∞ÏÇ¨ ÎÇ†Ïßú - 1Ïùº: Îâ¥Ïöï ÎßàÍ∞êÏùÄ Ï†ÑÎÇ† Í∏∞Ï§Ä)\nconst dateMatch = text.match(/ÏûÖÎ†• (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nlet date;\nif (dateMatch) {\n  const d = new Date(`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`);\n  d.setDate(d.getDate() - 1);\n  date = d.toISOString().slice(0, 10);\n} else {\n  const d = new Date();\n  d.setDate(d.getDate() - 1);\n  date = d.toISOString().slice(0, 10);\n}\n\n// WTI Ï¢ÖÍ∞Ä: 'Î∞∞Îü¥Îãπ 111.54Îã¨Îü¨Ïóê ÎßàÍ∞ê'\nconst wtiMatch = text.match(/Î∞∞Îü¥Îãπ\\s*([\\d,]+\\.?\\d*)\\s*Îã¨Îü¨Ïóê ÎßàÍ∞ê/);\nconst wti = wtiMatch ? parseFloat(wtiMatch[1].replace(/,/g,'')) : null;\n\n// Îâ¥Ïä§ ÏöîÏïΩ\nconst lead = text.match(/\\((Îâ¥Ïöï|ÏÑúÏö∏)=Ïó∞Ìï©[^)]*\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[2].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'WTIÏú†(NYMEX)': wti,\n  news_text: newsText,\n  category: 'oil'\n}}];\n"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[1568,560],"id":"77e950be-59aa-466e-94af-cfa9f744d74b","name":"Parse Oil"},{"parameters":{"jsCode":"// Ï±ÑÍ∂å Í∏∞ÏÇ¨ ÌååÏÑú\nconst item = $input.first().json;\nif (item.category !== 'bond') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ÎÇ†Ïßú\nconst dateMatch = text.match(/ÏûÖÎ†• (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nconst date = dateMatch ? dateMatch[1]+'-'+dateMatch[2]+'-'+dateMatch[3] : new Date().toISOString().slice(0,10);\n\n// 3ÎÖÑÎ¨º\nconst b3 = text.match(/Íµ≠Í≥†Ï±Ñ 3ÎÖÑÎ¨º ÏµúÏ¢ÖÌò∏Í∞Ä ÏàòÏùµÎ•†ÏùÄ[^%]*?(\\d+\\.\\d+)%/);\n// 10ÎÖÑÎ¨º\nconst b10 = text.match(/Íµ≠Í≥†Ï±Ñ 10ÎÖÑÎ¨º Í∏àÎ¶¨Îäî[^%]*?(\\d+\\.\\d+)%/);\n\n// Îâ¥Ïä§ ÏöîÏïΩ\nconst lead = text.match(/\\(ÏÑúÏö∏=Ïó∞Ìï©Ïù∏Ìè¨Îß•Ïä§\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[1].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)': b3 ? parseFloat(b3[1]) : null,\n  'Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)': b10 ? parseFloat(b10[1]) : null,\n  news_text: newsText,\n  category: 'bond'\n}}];"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[1568,880],"id":"f64f37d6-6205-4210-9cae-c32dc4d72ec6","name":"Parse Bond"},{"parameters":{"jsCode":"// Í∏∞ÏÇ¨ Ï†úÎ™©ÏúºÎ°ú category Î∂ÄÏó¨ + URL Ï∂îÏ∂ú\nconst item = $input.first().json;\nconst title = item.title || '';\nconst link = item.link || item.url || item.guid || '';\n\nlet category = null;\nif (title.includes('[ÏÑúÌôò-ÎßàÍ∞ê]')) category = 'exchange';\nelse if (title.includes('[Ï±ÑÍ∂å-ÎßàÍ∞ê]')) category = 'bond';\nelse if (title.includes('[Îâ¥ÏöïÏú†Í∞Ä]')) category = 'oil';\n\nif (!category) return [];\n\nreturn [{ json: { ...item, category, articleUrl: link } }];\n"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[672,560],"id":"1d17bd3c-5186-4be4-901e-26d62ad934a6","name":"ÌÇ§ÏõåÎìúÎ≥Ñ Î∂ÑÎ•ò"},{"parameters":{"pollTimes":{"item":[{"mode":"custom","cronExpression":"0 */5 4-9 * * 2-6"}]}},"id":"rss-s1n9-0001-0001-0001-000000000001","name":"RSS S1N9 (Ïú†Í∞Ä)","type":"n8n-nodes-base.rssFeedReadTrigger","typeVersion":1,"position":[224,656]},{"parameters":{"operation":"append","documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî"},"sheetName":{"__rl":true,"value":604037688,"mode":"list","cachedResultName":"Ïú†Í∞Ä"},"columns":{"mappingMode":"defineBelow","value":{"DATE":"={{ $json.DATE }}","WTIÏú†(NYMEX)":"={{ $json['WTIÏú†(NYMEX)'] }}","Comment":"={{ $json.choices[0].message.content }}","category":"={{ $json.category }}"},"matchingColumns":[],"schema":[{"id":"DATE","displayName":"DATE","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"WTIÏú†(NYMEX)","displayName":"WTIÏú†(NYMEX)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Comment","displayName":"Comment","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"category","displayName":"category","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"id":"append-oil-0001-0001-0001-000000000001","name":"Append Oil Sheet","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2464,592],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"operation":"append","documentId":{"__rl":true,"value":"1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE","mode":"list","cachedResultName":"Í≤ΩÏ†úÏßÄÌëú Ï∞®Ìä∏ ÏûêÎèôÌôî"},"sheetName":{"__rl":true,"value":2013300130,"mode":"list","cachedResultName":"Íµ≠Í≥†Ï±Ñ"},"columns":{"mappingMode":"defineBelow","value":{"DATE":"={{ $json.DATE }}","Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)":"={{ $json['Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)'] }}","Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)":"={{ $json['Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)'] }}","Comment":"={{ $json.choices[0].message.content }}","category":"={{ $json.category }}"},"matchingColumns":[],"schema":[{"id":"DATE","displayName":"DATE","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)","displayName":"Íµ≠Í≥†Ï±ÑÍ∂å(3ÎÖÑ)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)","displayName":"Íµ≠Í≥†Ï±ÑÍ∂å(10ÎÖÑ)","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"Comment","displayName":"Comment","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false},{"id":"category","displayName":"category","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true,"removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"id":"append-bond-001-0001-0001-000000000001","name":"Append Bond Sheet","type":"n8n-nodes-base.googleSheets","typeVersion":4.5,"position":[2464,784],"credentials":{"googleSheetsOAuth2Api":{"id":"vwa1sjnJPULfEh40","name":"Google Sheets account"}},"onError":"continueRegularOutput"},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"id":"merge-node-001-0001-0001-000000000001","name":"Merge Chart+Comment","type":"n8n-nodes-base.merge","typeVersion":3,"position":[4032,176]},{"parameters":{"url":"={{ $json.articleUrl }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}]},"options":{}},"id":"http-article-nd-0001-0001-000000000001","name":"HTTP Request Article","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[896,640],"onError":"continueRegularOutput"},{"parameters":{"operation":"extractHtmlContent","extractionValues":{"values":[{"key":"content","cssSelector":"#article-view-content-div"}]},"options":{}},"id":"html-extract-nd-0001-0001-000000000001","name":"Extract Article HTML","type":"n8n-nodes-base.html","typeVersion":1.2,"position":[1120,640]},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"id":"merge-article-nd-001-0001-000000000001","name":"Merge Article Data","type":"n8n-nodes-base.merge","typeVersion":3.2,"position":[1344,560]},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"type":"n8n-nodes-base.merge","typeVersion":3.2,"position":[2240,32],"id":"8a3e3163-f861-4b8e-919e-130c92563580","name":"Merge"},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"type":"n8n-nodes-base.merge","typeVersion":3.2,"position":[2240,592],"id":"e00be533-a683-488b-a250-25e3e8a6d07f","name":"Merge1"},{"parameters":{"mode":"combine","combineBy":"combineByPosition","options":{}},"type":"n8n-nodes-base.merge","typeVersion":3.2,"position":[2240,784],"id":"251cf479-c419-4cc9-adc4-785b8e48ddc6","name":"Merge2"},{"parameters":{"rules":{"values":[{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"leftValue":"={{ $json.category }}","rightValue":"exchange","operator":{"type":"string","operation":"equals"},"id":"42ba8b6f-f42e-442a-85f8-055b87aee03e"}],"combinator":"and"},"renameOutput":true,"outputKey":"Exchange"},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"id":"05bc58e3-2bae-4af0-9df3-59d7a83e1af4","leftValue":"={{ $json.category }}","rightValue":"oil","operator":{"type":"string","operation":"equals"}}],"combinator":"and"},"renameOutput":true,"outputKey":"Oil"},{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":3},"conditions":[{"id":"f0cb6597-a3c1-41e9-aa26-1bd1753b789c","leftValue":"={{ $json.category }}","rightValue":"bond","operator":{"type":"string","operation":"equals"}}],"combinator":"and"},"renameOutput":true,"outputKey":"Bond"}]},"options":{}},"type":"n8n-nodes-base.switch","typeVersion":3.4,"position":[2688,16],"id":"d5d6087c-5d21-466b-b960-f718cc41a497","name":"Switch"}],"connections":{"RSS Feed Trigger":{"main":[[{"node":"Filter","type":"main","index":0}]]},"RSS S1N9 (Ïú†Í∞Ä)":{"main":[[{"node":"Filter","type":"main","index":0}]]},"Filter":{"main":[[{"node":"ÌÇ§ÏõåÎìúÎ≥Ñ Î∂ÑÎ•ò","type":"main","index":0}]]},"ÌÇ§ÏõåÎìúÎ≥Ñ Î∂ÑÎ•ò":{"main":[[{"node":"HTTP Request Article","type":"main","index":0},{"node":"Merge Article Data","type":"main","index":0}]]},"Parse Exchange":{"main":[[{"node":"Build Comment Prompt","type":"main","index":0},{"node":"Merge","type":"main","index":0}]]},"Parse Oil":{"main":[[{"node":"Build Comment Prompt","type":"main","index":0},{"node":"Merge1","type":"main","index":1}]]},"Parse Bond":{"main":[[{"node":"Build Comment Prompt","type":"main","index":0},{"node":"Merge2","type":"main","index":1}]]},"Append Exchange Sheet":{"main":[[{"node":"Switch","type":"main","index":0}]]},"ÌôòÏú® Data":{"main":[[{"node":"Í∏∞Í∞Ñ ÌïÑÌÑ∞","type":"main","index":0}]]},"Ïú†Í∞Ä Data":{"main":[[{"node":"Í∏∞Í∞Ñ ÌïÑÌÑ∞","type":"main","index":0}]]},"Íµ≠Í≥†Ï±Ñ Data":{"main":[[{"node":"Í∏∞Í∞Ñ ÌïÑÌÑ∞","type":"main","index":0}]]},"Í∏∞Í∞Ñ ÌïÑÌÑ∞":{"main":[[{"node":"Build QuickChart JSON","type":"main","index":0}]]},"Build QuickChart JSON":{"main":[[{"node":"Send to QuickChart","type":"main","index":0}]]},"Send to QuickChart":{"main":[[{"node":"Send Chart Photos","type":"main","index":0}]]},"Send Chart Photos":{"main":[[{"node":"Merge Chart+Comment","type":"main","index":0}]]},"Build Comment Prompt":{"main":[[{"node":"Generate Comment","type":"main","index":0}]]},"Merge Chart+Comment":{"main":[[{"node":"Send Comment Text","type":"main","index":0}]]},"Send Comment Text":{"main":[[]]},"Append Oil Sheet":{"main":[[{"node":"Switch","type":"main","index":0}]]},"Append Bond Sheet":{"main":[[{"node":"Switch","type":"main","index":0}]]},"HTTP Request Article":{"main":[[{"node":"Extract Article HTML","type":"main","index":0}]]},"Extract Article HTML":{"main":[[{"node":"Merge Article Data","type":"main","index":1}]]},"Merge Article Data":{"main":[[{"node":"Parse Exchange","type":"main","index":0},{"node":"Parse Oil","type":"main","index":0},{"node":"Parse Bond","type":"main","index":0}]]},"Generate Comment":{"main":[[{"node":"Merge","type":"main","index":1},{"node":"Merge1","type":"main","index":0},{"node":"Merge2","type":"main","index":0},{"node":"Merge Chart+Comment","type":"main","index":1}]]},"Merge1":{"main":[[{"node":"Append Oil Sheet","type":"main","index":0}]]},"Merge2":{"main":[[{"node":"Append Bond Sheet","type":"main","index":0}]]},"Merge":{"main":[[{"node":"Append Exchange Sheet","type":"main","index":0}]]},"Switch":{"main":[[{"node":"ÌôòÏú® Data","type":"main","index":0}],[{"node":"Ïú†Í∞Ä Data","type":"main","index":0}],[{"node":"Íµ≠Í≥†Ï±Ñ Data","type":"main","index":0}]]}},"authors":"TaeHee Kim","name":"Version 9eac6587","description":"","autosaved":true,"workflowPublishHistory":[{"createdAt":"2026-04-07T02:52:26.220Z","id":88,"workflowId":"WW51yZ7oEmyp01kW","versionId":"9eac6587-cfb0-4a7f-a99f-fedd9f82bb96","event":"activated","userId":"e7556dbf-c6f9-4597-80f7-988115231e21"}]}}
+{
+  "updatedAt": "2026-04-07T02:52:23.564Z",
+  "createdAt": "2026-04-04T16:57:10.635Z",
+  "id": "WW51yZ7oEmyp01kW",
+  "name": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+          "mode": "list",
+          "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "»Ø¿≤",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)": "={{ $json['ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)'] }}",
+            "ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)": "={{ $json['ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)'] }}",
+            "DATE": "={{ $json.DATE }}",
+            "Comment": "={{ $json.choices[0].message.content }}",
+            "category": "={{ $json.category }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "DATE",
+              "displayName": "DATE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)",
+              "displayName": "ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)",
+              "displayName": "ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "n11",
+      "name": "Append Exchange Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2464,
+        32
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vwa1sjnJPULfEh40",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// »Ø¿≤/¿Ø∞°/√§±« æ∆¿Ã≈€ «’ªÍ -> GPT «¡∑“«¡∆Æ\nconst items = $input.all();\nlet exchangeData = {}, oilData = {}, bondData = {};\nconst newsList = [];\n\nfor (const it of items) {\n  const d = it.json;\n  if (d.category === 'exchange') exchangeData = d;\n  else if (d.category === 'oil') oilData = d;\n  else if (d.category === 'bond') bondData = d;\n  if (d.news_text) newsList.push(d.news_text);\n}\n\nconst today = exchangeData.DATE || oilData.DATE || bondData.DATE\n  || new Date().toISOString().slice(0,10);\n\nconst systemPrompt = '¥ÁΩ≈¿∫ «—±π ±›¿∂Ω√¿Â æ÷≥Œ∏ÆΩ∫∆Æ¿‘¥œ¥Ÿ. æ∆∑° ∞Ê¡¶¡ˆ«•øÕ ¥∫Ω∫∏¶ πŸ≈¡¿∏∑Œ Ω√»≤ ƒ⁄∏‡∆Æ∏¶ ¿€º∫«œººø‰.\\n\\n[¿€º∫ ±‘ƒ¢]\\n- «ŸΩ… ¡÷√º(»Ø¿≤°§¿Ø∞°°§±π√§)∏¶ æ’ø° ¡¶Ω√«œ∞Ì Ω∞«•∑Œ ∏∆∂Ù ø¨∞·\\n- πË∞Ê°§ø¯¿Œ °Ê «ŸΩ… ≥ªøÎ °Ê ∞·∞˙°§¿«πÃ°§¿¸∏¡ º¯º≠∑Œ º≠º˙\\n- ¡æ∞° ºˆƒ°, ∫Øµø∆¯, %p µÓ ±∏√º¿˚ º˝¿⁄ π›µÂΩ√ ∆˜«‘\\n- 2~3πÆ¿Â, ∞¢ πÆ¿Â 40¿⁄ ≥ªø‹, ¿Ã∏¡ˆ°§√‚√≥ æ¯¿Ã «— ¥‹∂Ù (¡ŸπŸ≤ﬁ æ¯¿Ω)\\n- Ω∞«•∑Œ ∏∆∂Ù¿ª ø¨∞·«œ∏Á π–µµ ¿÷∞‘ ¿€º∫\\n\\n[√‚∑¬ «¸Ωƒ] JSON «— ¡Ÿ∏∏ π›»Ø, ƒ⁄µÂ∫Ì∑œ æ¯¿Ã\\n{\"title\": \"«ŸΩ… ¡ˆ«•øÕ ¿ÃΩ¥∏¶ ¥„¿∫ 20¿⁄ ≥ªø‹ ¡¶∏Ò\", \"summary\": \"2~3πÆ¿Â ∞¸∑√ ƒ⁄∏‡∆Æ\"}\\n\\n[√‚∑¬ øπΩ√]\\n{\"title\": \"¥ﬁ∑Ø-ø¯ »Ø¿≤ ∞≠∫∏«’\", \"summary\": \"¥ﬁ∑Ø-ø¯ »Ø¿≤¿Ã 1,506.3ø¯¿∏∑Œ ¿¸¿Â ¥Î∫Ò 1.10ø¯ ªÛΩ¬, πÃ±π∞˙ ¿Ã∂ı¿« ±∫ªÁ ±‰¿Â¿Ã »Ø¿≤ ∞≠ºº ø‰¿Œ¿∏∑Œ ¿€øÎ. ¡ˆ≥≠ ¿Âø°º≠ 1,510.30ø¯¿∏∑Œ Ω√¿€«ﬂ¿∏≥™ √÷¿˙ 1,503.50ø¯±Ó¡ˆ «œ∂Ù«œ∏Á 1,505ø¯ ∫Œ±Ÿø°º≠ µÓ∂Ù¿ª π›∫π. æ’¿∏∑Œ¿« ¿Ã∂ı¿« ªÛ»≤ø° µ˚∂Û ∫“»ÆΩ«º∫¿Ã ¡ˆº”µ… ¿¸∏¡.\"}';\n\nconst usdKrw = exchangeData['ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)'];\nconst wti = oilData['WTI¿Ø(NYMEX)'];\nconst b3 = bondData['±π∞Ì√§±«(3≥‚)'];\nconst b10 = bondData['±π∞Ì√§±«(10≥‚)'];\n\nconst userMsg = [\n  'ø¿¥√ ≥Ø¬•: ' + today,\n  '¥ﬁ∑Ø-ø¯ »Ø¿≤(15:30): ' + (usdKrw != null ? usdKrw + 'ø¯' : 'N/A'),\n  'WTI ¿Ø∞°: $' + (wti != null ? wti : 'N/A'),\n  '±π√§ 3≥‚: ' + (b3 != null ? b3 + '%' : 'N/A'),\n  '±π√§ 10≥‚: ' + (b10 != null ? b10 + '%' : 'N/A'),\n  '',\n  '∞¸∑√ ¥∫Ω∫:',\n  newsList.join('\\n\\n') || '¥∫Ω∫ æ¯¿Ω'\n].join('\\n');\n\nconst requestBody = JSON.stringify({\n  model: 'gpt-4o-mini',\n  messages: [\n    { role: 'system', content: systemPrompt },\n    { role: 'user', content: userMsg }\n  ],\n  max_tokens: 600\n});\n\nreturn [{ json: { today, usdKrw, wti, b3, b10, requestBody } }];"
+      },
+      "id": "n14",
+      "name": "Build Comment Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.requestBody }}",
+        "options": {}
+      },
+      "id": "n15",
+      "name": "Generate Comment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2016,
+        416
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "UoYETyZhfRGH368H",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "=@undergroundresearch36",
+        "text": "={{ (() => { try { const raw = $json.choices && $json.choices[0] ? $json.choices[0].message.content : null; if (!raw) return 'Ω√»≤ ƒ⁄∏‡∆Æ∏¶ ª˝º∫«œ¡ˆ ∏¯«ﬂΩ¿¥œ¥Ÿ.'; const r = JSON.parse(raw); return r.title + '\\n\\n' + r.summary; } catch(e) { return $json.choices[0].message.content; } })() }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "n16",
+      "name": "Send Comment Text",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4256,
+        176
+      ],
+      "webhookId": "b8005ef2-3b26-4dd6-82d8-4a605a75d57e",
+      "credentials": {
+        "telegramApi": {
+          "id": "OhTzD6yy7QWhnLZ2",
+          "name": "πÿπŸ¥⁄∏Æº≠ƒ° ¥∫Ω∫ ¿⁄µø»≠ ∫Í∏Æ«Œ øˆ≈©«√∑ŒøÏ"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// µ•¿Ã≈Õ ∫–∑˘ π◊ ≥Ø¬• ø¿∏ß¬˜º¯ ¡§∑ƒ\nconst »Ø¿≤Data = items\n  .filter(i => i.json['ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nconst ¿Ø∞°Data = items\n  .filter(i => i.json['WTI¿Ø(NYMEX)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nconst ±π∞Ì√§Data = items\n  .filter(i => i.json['±π∞Ì√§±«(3≥‚)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nfunction buildChart(labels, datasets, title) {\n  return {\n    type: 'line',\n    data: { labels, datasets },\n    options: {\n      title: { display: true, text: title, fontSize: 16 },\n      legend: { display: true },\n      scales: {\n        xAxes: [{ ticks: { maxTicksLimit: 10, maxRotation: 45 } }]\n      }\n    }\n  };\n}\n\nconst charts = [];\n\n// »Ø¿≤ µ•¿Ã≈Õ∞° ¿÷¿ª ∂ß∏∏ √ﬂ∞°\nif (»Ø¿≤Data.length > 0) {\n  charts.push({\n    chartName: '»Ø¿≤',\n    chart: buildChart(\n      »Ø¿≤Data.map(i => i.json['DATE']),\n      [\n        {\n          label: 'ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)',\n          data: »Ø¿≤Data.map(i => parseFloat(i.json['ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)']) || null),\n          borderColor: '#1565C0',\n          backgroundColor: 'rgba(21,101,192,0.1)',\n          fill: false,\n          tension: 0.1\n        },\n        {\n          label: 'ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)',\n          data: »Ø¿≤Data.map(i => parseFloat(i.json['ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)']) || null),\n          borderColor: '#42A5F5',\n          backgroundColor: 'rgba(66,165,245,0.1)',\n          fill: false,\n          tension: 0.1\n        }\n      ],\n      'USD/KRW »Ø¿≤'\n    )\n  });\n}\n\n// ¿Ø∞° µ•¿Ã≈Õ∞° ¿÷¿ª ∂ß∏∏ √ﬂ∞°\nif (¿Ø∞°Data.length > 0) {\n  charts.push({\n    chartName: '¿Ø∞°',\n    chart: buildChart(\n      ¿Ø∞°Data.map(i => i.json['DATE']),\n      [\n        {\n          label: 'WTI¿Ø(NYMEX)',\n          data: ¿Ø∞°Data.map(i => parseFloat(i.json['WTI¿Ø(NYMEX)']) || null),\n          borderColor: '#E65100',\n          backgroundColor: 'rgba(230,81,0,0.1)',\n          fill: true,\n          tension: 0.1\n        }\n      ],\n      'WTI ¿Ø∞°'\n    )\n  });\n}\n\n// ±π∞Ì√§ µ•¿Ã≈Õ∞° ¿÷¿ª ∂ß∏∏ √ﬂ∞°\nif (±π∞Ì√§Data.length > 0) {\n  charts.push({\n    chartName: '±π∞Ì√§',\n    chart: buildChart(\n      ±π∞Ì√§Data.map(i => i.json['DATE']),\n      [\n        {\n          label: '±π∞Ì√§(3≥‚)',\n          data: ±π∞Ì√§Data.map(i => parseFloat(i.json['±π∞Ì√§±«(3≥‚)']) || null),\n          borderColor: '#2E7D32',\n          fill: false,\n          tension: 0.1\n        },\n        {\n          label: '±π∞Ì√§(10≥‚)',\n          data: ±π∞Ì√§Data.map(i => parseFloat(i.json['±π∞Ì√§±«(10≥‚)']) || null),\n          borderColor: '#FF8F00',\n          fill: false,\n          tension: 0.1\n        },\n      ],\n      '±π∞Ì√§ ±›∏Æ'\n    )\n  });\n}\n\nreturn charts.map(c => ({\n  json: {\n    chartName: c.chartName,\n    width: 800,\n    height: 400,\n    backgroundColor: 'white',\n    chart: c.chart  // °Á JSON.stringify() ¡¶∞≈, ∞¥√º ±◊¥Î∑Œ ¿¸¥ﬁ\n  }\n}));\n"
+      },
+      "id": "n17",
+      "name": "Build QuickChart JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://quickchart.io/chart/create",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chart",
+              "value": "={{ $json.chart }}"
+            },
+            {
+              "name": "width",
+              "value": "={{ $json.width }}"
+            },
+            {
+              "name": "height",
+              "value": "={{ $json.height }}"
+            },
+            {
+              "name": "backgroundColor",
+              "value": "={{ $json.backgroundColor }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "n18",
+      "name": "Send to QuickChart",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3584,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "=@undergroundresearch36",
+        "file": "={{ $json.url }}",
+        "additionalFields": {}
+      },
+      "id": "n19",
+      "name": "Send Chart Photos",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3808,
+        0
+      ],
+      "webhookId": "890c0a74-7c94-490d-9b68-1928a34ec86d",
+      "credentials": {
+        "telegramApi": {
+          "id": "OhTzD6yy7QWhnLZ2",
+          "name": "πÿπŸ¥⁄∏Æº≠ƒ° ¥∫Ω∫ ¿⁄µø»≠ ∫Í∏Æ«Œ øˆ≈©«√∑ŒøÏ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+          "mode": "list",
+          "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "»Ø¿≤",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "n12",
+      "name": "»Ø¿≤ Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2912,
+        -160
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vwa1sjnJPULfEh40",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+          "mode": "list",
+          "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 604037688,
+          "mode": "list",
+          "cachedResultName": "¿Ø∞°",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=604037688"
+        },
+        "options": {}
+      },
+      "id": "28d75a01-4031-4768-8150-4a120fdcedcd",
+      "name": "¿Ø∞° Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2912,
+        32
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vwa1sjnJPULfEh40",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+          "mode": "list",
+          "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2013300130,
+          "mode": "list",
+          "cachedResultName": "±π∞Ì√§",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=2013300130"
+        },
+        "options": {}
+      },
+      "id": "74ebc57a-1487-47b8-b36b-1c0da7994685",
+      "name": "±π∞Ì√§ Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2912,
+        224
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vwa1sjnJPULfEh40",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d837e764-2549-4e8c-b92e-c797cc150a94",
+              "leftValue": "={{ $json['DATE'] }}",
+              "rightValue": "={{ $now.minus({days: 60}).toFormat('yyyy-MM-dd') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "afterOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        3136,
+        0
+      ],
+      "id": "214fe66e-a8b6-4849-9c2b-8ca5b1737bda",
+      "name": "±‚∞£ « ≈Õ"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "custom",
+              "cronExpression": "0 */5 17-20 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        224,
+        464
+      ],
+      "id": "3960e4f9-651c-4962-9422-57bf4abf6908",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond-exchange",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[º≠»Ø-∏∂∞®]",
+              "operator": {
+                "type": "string",
+                "operation": "contains",
+                "name": "filter.operator.contains"
+              }
+            },
+            {
+              "id": "cond-bond",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[√§±«-∏∂∞®]",
+              "operator": {
+                "type": "string",
+                "operation": "contains",
+                "name": "filter.operator.contains"
+              }
+            },
+            {
+              "id": "cond-oil",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "[¥∫øÂ¿Ø∞°]",
+              "operator": {
+                "type": "string",
+                "operation": "contains",
+                "name": "filter.operator.contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        560
+      ],
+      "id": "afb7ad63-ed21-4d7b-b8e6-72e15d9ddd70",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// »Ø¿≤ ±‚ªÁ ∆ƒº≠\nconst item = $input.first().json;\nif (item.category !== 'exchange') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ≥Ø¬•: '¿‘∑¬ 2026.04.03'\nconst dateMatch = text.match(/¿‘∑¬ (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nconst date = dateMatch ? dateMatch[1]+'-'+dateMatch[2]+'-'+dateMatch[3] : new Date().toISOString().slice(0,10);\n\n// 15:30 ¡§±‘¿Â ¡æ∞°\nconst c15 = text.match(/ø¿»ƒ 3Ω√ 30∫– ±‚¡ÿ¿∏∑Œ.+?([1-9],?\\d{3}\\.\\d+)ø¯ø° ¡§±‘¿Â/);\nconst usd_krw_1530 = c15 ? parseFloat(c15[1].replace(/,/g,'')) : null;\n\n// Ω√∞° (¿¸≥Ø NDF)\nconst cOpen = text.match(/¿¸≥Ø ¥Î∫Ò.+?([1-9],?\\d{3}\\.\\d+)ø¯ø°º≠ ∞≈∑°∏¶ Ω√¿€/);\nconst usd_krw_0200 = cOpen ? parseFloat(cOpen[1].replace(/,/g,'')) : null;\n\n// ¥∫Ω∫ ø‰æ‡ (∏ÆµÂ πÆ¥‹)\nconst lead = text.match(/\\(º≠øÔ=ø¨«’¿Œ∆˜∏∆Ω∫\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[1].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)': usd_krw_1530,\n  'ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)': usd_krw_0200,\n  news_text: newsText,\n  category: 'exchange'\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        32
+      ],
+      "id": "5c922a4e-0506-4df3-8402-0b1d9897d5e9",
+      "name": "Parse Exchange"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ¿Ø∞° ±‚ªÁ ∆ƒº≠\nconst item = $input.first().json;\nif (item.category !== 'oil') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ≥Ø¬• (±‚ªÁ ≥Ø¬• - 1¿œ: ¥∫øÂ ∏∂∞®¿∫ ¿¸≥Ø ±‚¡ÿ)\nconst dateMatch = text.match(/¿‘∑¬ (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nlet date;\nif (dateMatch) {\n  const d = new Date(`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`);\n  d.setDate(d.getDate() - 1);\n  date = d.toISOString().slice(0, 10);\n} else {\n  const d = new Date();\n  d.setDate(d.getDate() - 1);\n  date = d.toISOString().slice(0, 10);\n}\n\n// WTI ¡æ∞°: 'πË∑≤¥Á 111.54¥ﬁ∑Øø° ∏∂∞®'\nconst wtiMatch = text.match(/πË∑≤¥Á\\s*([\\d,]+\\.?\\d*)\\s*¥ﬁ∑Øø° ∏∂∞®/);\nconst wti = wtiMatch ? parseFloat(wtiMatch[1].replace(/,/g,'')) : null;\n\n// ¥∫Ω∫ ø‰æ‡\nconst lead = text.match(/\\((¥∫øÂ|º≠øÔ)=ø¨«’[^)]*\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[2].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'WTI¿Ø(NYMEX)': wti,\n  news_text: newsText,\n  category: 'oil'\n}}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        560
+      ],
+      "id": "77e950be-59aa-466e-94af-cfa9f744d74b",
+      "name": "Parse Oil"
+    },
+    {
+      "parameters": {
+        "jsCode": "// √§±« ±‚ªÁ ∆ƒº≠\nconst item = $input.first().json;\nif (item.category !== 'bond') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ≥Ø¬•\nconst dateMatch = text.match(/¿‘∑¬ (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nconst date = dateMatch ? dateMatch[1]+'-'+dateMatch[2]+'-'+dateMatch[3] : new Date().toISOString().slice(0,10);\n\n// 3≥‚π∞\nconst b3 = text.match(/±π∞Ì√§ 3≥‚π∞ √÷¡æ»£∞° ºˆ¿Õ∑¸¿∫[^%]*?(\\d+\\.\\d+)%/);\n// 10≥‚π∞\nconst b10 = text.match(/±π∞Ì√§ 10≥‚π∞ ±›∏Æ¥¬[^%]*?(\\d+\\.\\d+)%/);\n\n// ¥∫Ω∫ ø‰æ‡\nconst lead = text.match(/\\(º≠øÔ=ø¨«’¿Œ∆˜∏∆Ω∫\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[1].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  '±π∞Ì√§±«(3≥‚)': b3 ? parseFloat(b3[1]) : null,\n  '±π∞Ì√§±«(10≥‚)': b10 ? parseFloat(b10[1]) : null,\n  news_text: newsText,\n  category: 'bond'\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        880
+      ],
+      "id": "f64f37d6-6205-4210-9cae-c32dc4d72ec6",
+      "name": "Parse Bond"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ±‚ªÁ ¡¶∏Ò¿∏∑Œ category ∫Œø© + URL √ﬂ√‚\nconst item = $input.first().json;\nconst title = item.title || '';\nconst link = item.link || item.url || item.guid || '';\n\nlet category = null;\nif (title.includes('[º≠»Ø-∏∂∞®]')) category = 'exchange';\nelse if (title.includes('[√§±«-∏∂∞®]')) category = 'bond';\nelse if (title.includes('[¥∫øÂ¿Ø∞°]')) category = 'oil';\n\nif (!category) return [];\n\nreturn [{ json: { ...item, category, articleUrl: link } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        560
+      ],
+      "id": "1d17bd3c-5186-4be4-901e-26d62ad934a6",
+      "name": "≈∞øˆµÂ∫∞ ∫–∑˘"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "custom",
+              "cronExpression": "0 */5 4-9 * * 2-6"
+            }
+          ]
+        }
+      },
+      "id": "rss-s1n9-0001-0001-0001-000000000001",
+      "name": "RSS S1N9 (¿Ø∞°)",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        224,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+          "mode": "list",
+          "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 604037688,
+          "mode": "list",
+          "cachedResultName": "¿Ø∞°"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "DATE": "={{ $json.DATE }}",
+            "WTI¿Ø(NYMEX)": "={{ $json['WTI¿Ø(NYMEX)'] }}",
+            "Comment": "={{ $json.choices[0].message.content }}",
+            "category": "={{ $json.category }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "DATE",
+              "displayName": "DATE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "WTI¿Ø(NYMEX)",
+              "displayName": "WTI¿Ø(NYMEX)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "append-oil-0001-0001-0001-000000000001",
+      "name": "Append Oil Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2464,
+        592
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vwa1sjnJPULfEh40",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+          "mode": "list",
+          "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2013300130,
+          "mode": "list",
+          "cachedResultName": "±π∞Ì√§"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "DATE": "={{ $json.DATE }}",
+            "±π∞Ì√§±«(3≥‚)": "={{ $json['±π∞Ì√§±«(3≥‚)'] }}",
+            "±π∞Ì√§±«(10≥‚)": "={{ $json['±π∞Ì√§±«(10≥‚)'] }}",
+            "Comment": "={{ $json.choices[0].message.content }}",
+            "category": "={{ $json.category }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "DATE",
+              "displayName": "DATE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "±π∞Ì√§±«(3≥‚)",
+              "displayName": "±π∞Ì√§±«(3≥‚)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "±π∞Ì√§±«(10≥‚)",
+              "displayName": "±π∞Ì√§±«(10≥‚)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "append-bond-001-0001-0001-000000000001",
+      "name": "Append Bond Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2464,
+        784
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vwa1sjnJPULfEh40",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "merge-node-001-0001-0001-000000000001",
+      "name": "Merge Chart+Comment",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4032,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.articleUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-article-nd-0001-0001-000000000001",
+      "name": "HTTP Request Article",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        640
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "content",
+              "cssSelector": "#article-view-content-div"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "html-extract-nd-0001-0001-000000000001",
+      "name": "Extract Article HTML",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "merge-article-nd-001-0001-000000000001",
+      "name": "Merge Article Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1344,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2240,
+        32
+      ],
+      "id": "8a3e3163-f861-4b8e-919e-130c92563580",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2240,
+        592
+      ],
+      "id": "e00be533-a683-488b-a250-25e3e8a6d07f",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2240,
+        784
+      ],
+      "id": "251cf479-c419-4cc9-adc4-785b8e48ddc6",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "exchange",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "42ba8b6f-f42e-442a-85f8-055b87aee03e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Exchange"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "05bc58e3-2bae-4af0-9df3-59d7a83e1af4",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "oil",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Oil"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f0cb6597-a3c1-41e9-aa26-1bd1753b789c",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "bond",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Bond"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        2688,
+        16
+      ],
+      "id": "d5d6087c-5d21-466b-b960-f718cc41a497",
+      "name": "Switch"
+    }
+  ],
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS S1N9 (¿Ø∞°)": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "≈∞øˆµÂ∫∞ ∫–∑˘",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "≈∞øˆµÂ∫∞ ∫–∑˘": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Article",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Article Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Exchange": {
+      "main": [
+        [
+          {
+            "node": "Build Comment Prompt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Oil": {
+      "main": [
+        [
+          {
+            "node": "Build Comment Prompt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Parse Bond": {
+      "main": [
+        [
+          {
+            "node": "Build Comment Prompt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Append Exchange Sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "»Ø¿≤ Data": {
+      "main": [
+        [
+          {
+            "node": "±‚∞£ « ≈Õ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Ø∞° Data": {
+      "main": [
+        [
+          {
+            "node": "±‚∞£ « ≈Õ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "±π∞Ì√§ Data": {
+      "main": [
+        [
+          {
+            "node": "±‚∞£ « ≈Õ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "±‚∞£ « ≈Õ": {
+      "main": [
+        [
+          {
+            "node": "Build QuickChart JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build QuickChart JSON": {
+      "main": [
+        [
+          {
+            "node": "Send to QuickChart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to QuickChart": {
+      "main": [
+        [
+          {
+            "node": "Send Chart Photos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Chart Photos": {
+      "main": [
+        [
+          {
+            "node": "Merge Chart+Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Comment Prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Chart+Comment": {
+      "main": [
+        [
+          {
+            "node": "Send Comment Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Comment Text": {
+      "main": [
+        []
+      ]
+    },
+    "Append Oil Sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Bond Sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Article": {
+      "main": [
+        [
+          {
+            "node": "Extract Article HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Article HTML": {
+      "main": [
+        [
+          {
+            "node": "Merge Article Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Article Data": {
+      "main": [
+        [
+          {
+            "node": "Parse Exchange",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Parse Oil",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Parse Bond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Comment": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Chart+Comment",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Append Oil Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Append Bond Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Append Exchange Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "»Ø¿≤ Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "¿Ø∞° Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "±π∞Ì√§ Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Seoul",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:RSS Feed Trigger": {
+      "lastItemDate": "2026-04-06T10:57:41.000Z"
+    },
+    "node:RSS S1N9 (¿Ø∞°)": {
+      "lastItemDate": "2026-04-06T10:57:41.000Z"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "9eac6587-cfb0-4a7f-a99f-fedd9f82bb96",
+  "activeVersionId": "9eac6587-cfb0-4a7f-a99f-fedd9f82bb96",
+  "versionCounter": 406,
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2026-04-04T16:57:10.635Z",
+      "createdAt": "2026-04-04T16:57:10.635Z",
+      "role": "workflow:owner",
+      "workflowId": "WW51yZ7oEmyp01kW",
+      "projectId": "B6oTH5ZqWMHh4Gyp",
+      "project": {
+        "updatedAt": "2026-03-15T11:11:16.680Z",
+        "createdAt": "2026-03-15T11:09:35.937Z",
+        "id": "B6oTH5ZqWMHh4Gyp",
+        "name": "TaeHee Kim <rlaxogml324@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "e7556dbf-c6f9-4597-80f7-988115231e21"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-04-07T02:52:26.225Z",
+    "createdAt": "2026-04-07T02:52:23.567Z",
+    "versionId": "9eac6587-cfb0-4a7f-a99f-fedd9f82bb96",
+    "workflowId": "WW51yZ7oEmyp01kW",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+            "mode": "list",
+            "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "»Ø¿≤",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)": "={{ $json['ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)'] }}",
+              "ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)": "={{ $json['ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)'] }}",
+              "DATE": "={{ $json.DATE }}",
+              "Comment": "={{ $json.choices[0].message.content }}",
+              "category": "={{ $json.category }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "DATE",
+                "displayName": "DATE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)",
+                "displayName": "ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)",
+                "displayName": "ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Comment",
+                "displayName": "Comment",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "category",
+                "displayName": "category",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "id": "n11",
+        "name": "Append Exchange Sheet",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2464,
+          32
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "vwa1sjnJPULfEh40",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// »Ø¿≤/¿Ø∞°/√§±« æ∆¿Ã≈€ «’ªÍ -> GPT «¡∑“«¡∆Æ\nconst items = $input.all();\nlet exchangeData = {}, oilData = {}, bondData = {};\nconst newsList = [];\n\nfor (const it of items) {\n  const d = it.json;\n  if (d.category === 'exchange') exchangeData = d;\n  else if (d.category === 'oil') oilData = d;\n  else if (d.category === 'bond') bondData = d;\n  if (d.news_text) newsList.push(d.news_text);\n}\n\nconst today = exchangeData.DATE || oilData.DATE || bondData.DATE\n  || new Date().toISOString().slice(0,10);\n\nconst systemPrompt = '¥ÁΩ≈¿∫ «—±π ±›¿∂Ω√¿Â æ÷≥Œ∏ÆΩ∫∆Æ¿‘¥œ¥Ÿ. æ∆∑° ∞Ê¡¶¡ˆ«•øÕ ¥∫Ω∫∏¶ πŸ≈¡¿∏∑Œ Ω√»≤ ƒ⁄∏‡∆Æ∏¶ ¿€º∫«œººø‰.\\n\\n[¿€º∫ ±‘ƒ¢]\\n- «ŸΩ… ¡÷√º(»Ø¿≤°§¿Ø∞°°§±π√§)∏¶ æ’ø° ¡¶Ω√«œ∞Ì Ω∞«•∑Œ ∏∆∂Ù ø¨∞·\\n- πË∞Ê°§ø¯¿Œ °Ê «ŸΩ… ≥ªøÎ °Ê ∞·∞˙°§¿«πÃ°§¿¸∏¡ º¯º≠∑Œ º≠º˙\\n- ¡æ∞° ºˆƒ°, ∫Øµø∆¯, %p µÓ ±∏√º¿˚ º˝¿⁄ π›µÂΩ√ ∆˜«‘\\n- 2~3πÆ¿Â, ∞¢ πÆ¿Â 40¿⁄ ≥ªø‹, ¿Ã∏¡ˆ°§√‚√≥ æ¯¿Ã «— ¥‹∂Ù (¡ŸπŸ≤ﬁ æ¯¿Ω)\\n- Ω∞«•∑Œ ∏∆∂Ù¿ª ø¨∞·«œ∏Á π–µµ ¿÷∞‘ ¿€º∫\\n\\n[√‚∑¬ «¸Ωƒ] JSON «— ¡Ÿ∏∏ π›»Ø, ƒ⁄µÂ∫Ì∑œ æ¯¿Ã\\n{\"title\": \"«ŸΩ… ¡ˆ«•øÕ ¿ÃΩ¥∏¶ ¥„¿∫ 20¿⁄ ≥ªø‹ ¡¶∏Ò\", \"summary\": \"2~3πÆ¿Â ∞¸∑√ ƒ⁄∏‡∆Æ\"}\\n\\n[√‚∑¬ øπΩ√]\\n{\"title\": \"¥ﬁ∑Ø-ø¯ »Ø¿≤ ∞≠∫∏«’\", \"summary\": \"¥ﬁ∑Ø-ø¯ »Ø¿≤¿Ã 1,506.3ø¯¿∏∑Œ ¿¸¿Â ¥Î∫Ò 1.10ø¯ ªÛΩ¬, πÃ±π∞˙ ¿Ã∂ı¿« ±∫ªÁ ±‰¿Â¿Ã »Ø¿≤ ∞≠ºº ø‰¿Œ¿∏∑Œ ¿€øÎ. ¡ˆ≥≠ ¿Âø°º≠ 1,510.30ø¯¿∏∑Œ Ω√¿€«ﬂ¿∏≥™ √÷¿˙ 1,503.50ø¯±Ó¡ˆ «œ∂Ù«œ∏Á 1,505ø¯ ∫Œ±Ÿø°º≠ µÓ∂Ù¿ª π›∫π. æ’¿∏∑Œ¿« ¿Ã∂ı¿« ªÛ»≤ø° µ˚∂Û ∫“»ÆΩ«º∫¿Ã ¡ˆº”µ… ¿¸∏¡.\"}';\n\nconst usdKrw = exchangeData['ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)'];\nconst wti = oilData['WTI¿Ø(NYMEX)'];\nconst b3 = bondData['±π∞Ì√§±«(3≥‚)'];\nconst b10 = bondData['±π∞Ì√§±«(10≥‚)'];\n\nconst userMsg = [\n  'ø¿¥√ ≥Ø¬•: ' + today,\n  '¥ﬁ∑Ø-ø¯ »Ø¿≤(15:30): ' + (usdKrw != null ? usdKrw + 'ø¯' : 'N/A'),\n  'WTI ¿Ø∞°: $' + (wti != null ? wti : 'N/A'),\n  '±π√§ 3≥‚: ' + (b3 != null ? b3 + '%' : 'N/A'),\n  '±π√§ 10≥‚: ' + (b10 != null ? b10 + '%' : 'N/A'),\n  '',\n  '∞¸∑√ ¥∫Ω∫:',\n  newsList.join('\\n\\n') || '¥∫Ω∫ æ¯¿Ω'\n].join('\\n');\n\nconst requestBody = JSON.stringify({\n  model: 'gpt-4o-mini',\n  messages: [\n    { role: 'system', content: systemPrompt },\n    { role: 'user', content: userMsg }\n  ],\n  max_tokens: 600\n});\n\nreturn [{ json: { today, usdKrw, wti, b3, b10, requestBody } }];"
+        },
+        "id": "n14",
+        "name": "Build Comment Prompt",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1792,
+          416
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "contentType": "raw",
+          "rawContentType": "application/json",
+          "body": "={{ $json.requestBody }}",
+          "options": {}
+        },
+        "id": "n15",
+        "name": "Generate Comment",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2016,
+          416
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "UoYETyZhfRGH368H",
+            "name": "OpenAi account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "chatId": "=@undergroundresearch36",
+          "text": "={{ (() => { try { const raw = $json.choices && $json.choices[0] ? $json.choices[0].message.content : null; if (!raw) return 'Ω√»≤ ƒ⁄∏‡∆Æ∏¶ ª˝º∫«œ¡ˆ ∏¯«ﬂΩ¿¥œ¥Ÿ.'; const r = JSON.parse(raw); return r.title + '\\n\\n' + r.summary; } catch(e) { return $json.choices[0].message.content; } })() }}",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "id": "n16",
+        "name": "Send Comment Text",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          4256,
+          176
+        ],
+        "webhookId": "b8005ef2-3b26-4dd6-82d8-4a605a75d57e",
+        "credentials": {
+          "telegramApi": {
+            "id": "OhTzD6yy7QWhnLZ2",
+            "name": "πÿπŸ¥⁄∏Æº≠ƒ° ¥∫Ω∫ ¿⁄µø»≠ ∫Í∏Æ«Œ øˆ≈©«√∑ŒøÏ"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\n// µ•¿Ã≈Õ ∫–∑˘ π◊ ≥Ø¬• ø¿∏ß¬˜º¯ ¡§∑ƒ\nconst »Ø¿≤Data = items\n  .filter(i => i.json['ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nconst ¿Ø∞°Data = items\n  .filter(i => i.json['WTI¿Ø(NYMEX)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nconst ±π∞Ì√§Data = items\n  .filter(i => i.json['±π∞Ì√§±«(3≥‚)'] !== undefined)\n  .sort((a, b) => new Date(a.json['DATE']) - new Date(b.json['DATE']));\n\nfunction buildChart(labels, datasets, title) {\n  return {\n    type: 'line',\n    data: { labels, datasets },\n    options: {\n      title: { display: true, text: title, fontSize: 16 },\n      legend: { display: true },\n      scales: {\n        xAxes: [{ ticks: { maxTicksLimit: 10, maxRotation: 45 } }]\n      }\n    }\n  };\n}\n\nconst charts = [];\n\n// »Ø¿≤ µ•¿Ã≈Õ∞° ¿÷¿ª ∂ß∏∏ √ﬂ∞°\nif (»Ø¿≤Data.length > 0) {\n  charts.push({\n    chartName: '»Ø¿≤',\n    chart: buildChart(\n      »Ø¿≤Data.map(i => i.json['DATE']),\n      [\n        {\n          label: 'ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)',\n          data: »Ø¿≤Data.map(i => parseFloat(i.json['ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)']) || null),\n          borderColor: '#1565C0',\n          backgroundColor: 'rgba(21,101,192,0.1)',\n          fill: false,\n          tension: 0.1\n        },\n        {\n          label: 'ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)',\n          data: »Ø¿≤Data.map(i => parseFloat(i.json['ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)']) || null),\n          borderColor: '#42A5F5',\n          backgroundColor: 'rgba(66,165,245,0.1)',\n          fill: false,\n          tension: 0.1\n        }\n      ],\n      'USD/KRW »Ø¿≤'\n    )\n  });\n}\n\n// ¿Ø∞° µ•¿Ã≈Õ∞° ¿÷¿ª ∂ß∏∏ √ﬂ∞°\nif (¿Ø∞°Data.length > 0) {\n  charts.push({\n    chartName: '¿Ø∞°',\n    chart: buildChart(\n      ¿Ø∞°Data.map(i => i.json['DATE']),\n      [\n        {\n          label: 'WTI¿Ø(NYMEX)',\n          data: ¿Ø∞°Data.map(i => parseFloat(i.json['WTI¿Ø(NYMEX)']) || null),\n          borderColor: '#E65100',\n          backgroundColor: 'rgba(230,81,0,0.1)',\n          fill: true,\n          tension: 0.1\n        }\n      ],\n      'WTI ¿Ø∞°'\n    )\n  });\n}\n\n// ±π∞Ì√§ µ•¿Ã≈Õ∞° ¿÷¿ª ∂ß∏∏ √ﬂ∞°\nif (±π∞Ì√§Data.length > 0) {\n  charts.push({\n    chartName: '±π∞Ì√§',\n    chart: buildChart(\n      ±π∞Ì√§Data.map(i => i.json['DATE']),\n      [\n        {\n          label: '±π∞Ì√§(3≥‚)',\n          data: ±π∞Ì√§Data.map(i => parseFloat(i.json['±π∞Ì√§±«(3≥‚)']) || null),\n          borderColor: '#2E7D32',\n          fill: false,\n          tension: 0.1\n        },\n        {\n          label: '±π∞Ì√§(10≥‚)',\n          data: ±π∞Ì√§Data.map(i => parseFloat(i.json['±π∞Ì√§±«(10≥‚)']) || null),\n          borderColor: '#FF8F00',\n          fill: false,\n          tension: 0.1\n        },\n      ],\n      '±π∞Ì√§ ±›∏Æ'\n    )\n  });\n}\n\nreturn charts.map(c => ({\n  json: {\n    chartName: c.chartName,\n    width: 800,\n    height: 400,\n    backgroundColor: 'white',\n    chart: c.chart  // °Á JSON.stringify() ¡¶∞≈, ∞¥√º ±◊¥Î∑Œ ¿¸¥ﬁ\n  }\n}));\n"
+        },
+        "id": "n17",
+        "name": "Build QuickChart JSON",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3360,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://quickchart.io/chart/create",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "chart",
+                "value": "={{ $json.chart }}"
+              },
+              {
+                "name": "width",
+                "value": "={{ $json.width }}"
+              },
+              {
+                "name": "height",
+                "value": "={{ $json.height }}"
+              },
+              {
+                "name": "backgroundColor",
+                "value": "={{ $json.backgroundColor }}"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "id": "n18",
+        "name": "Send to QuickChart",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3584,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "sendPhoto",
+          "chatId": "=@undergroundresearch36",
+          "file": "={{ $json.url }}",
+          "additionalFields": {}
+        },
+        "id": "n19",
+        "name": "Send Chart Photos",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          3808,
+          0
+        ],
+        "webhookId": "890c0a74-7c94-490d-9b68-1928a34ec86d",
+        "credentials": {
+          "telegramApi": {
+            "id": "OhTzD6yy7QWhnLZ2",
+            "name": "πÿπŸ¥⁄∏Æº≠ƒ° ¥∫Ω∫ ¿⁄µø»≠ ∫Í∏Æ«Œ øˆ≈©«√∑ŒøÏ"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+            "mode": "list",
+            "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "»Ø¿≤",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=0"
+          },
+          "options": {}
+        },
+        "id": "n12",
+        "name": "»Ø¿≤ Data",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2912,
+          -160
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "vwa1sjnJPULfEh40",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+            "mode": "list",
+            "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 604037688,
+            "mode": "list",
+            "cachedResultName": "¿Ø∞°",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=604037688"
+          },
+          "options": {}
+        },
+        "id": "28d75a01-4031-4768-8150-4a120fdcedcd",
+        "name": "¿Ø∞° Data",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2912,
+          32
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "vwa1sjnJPULfEh40",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+            "mode": "list",
+            "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 2013300130,
+            "mode": "list",
+            "cachedResultName": "±π∞Ì√§",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE/edit#gid=2013300130"
+          },
+          "options": {}
+        },
+        "id": "74ebc57a-1487-47b8-b36b-1c0da7994685",
+        "name": "±π∞Ì√§ Data",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2912,
+          224
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "vwa1sjnJPULfEh40",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "d837e764-2549-4e8c-b92e-c797cc150a94",
+                "leftValue": "={{ $json['DATE'] }}",
+                "rightValue": "={{ $now.minus({days: 60}).toFormat('yyyy-MM-dd') }}",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "afterOrEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.3,
+        "position": [
+          3136,
+          0
+        ],
+        "id": "214fe66e-a8b6-4849-9c2b-8ca5b1737bda",
+        "name": "±‚∞£ « ≈Õ"
+      },
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "custom",
+                "cronExpression": "0 */5 17-20 * * 1-5"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.rssFeedReadTrigger",
+        "typeVersion": 1,
+        "position": [
+          224,
+          464
+        ],
+        "id": "3960e4f9-651c-4962-9422-57bf4abf6908",
+        "name": "RSS Feed Trigger"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "cond-exchange",
+                "leftValue": "={{ $json.title }}",
+                "rightValue": "[º≠»Ø-∏∂∞®]",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains",
+                  "name": "filter.operator.contains"
+                }
+              },
+              {
+                "id": "cond-bond",
+                "leftValue": "={{ $json.title }}",
+                "rightValue": "[√§±«-∏∂∞®]",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains",
+                  "name": "filter.operator.contains"
+                }
+              },
+              {
+                "id": "cond-oil",
+                "leftValue": "={{ $json.title }}",
+                "rightValue": "[¥∫øÂ¿Ø∞°]",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains",
+                  "name": "filter.operator.contains"
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.3,
+        "position": [
+          448,
+          560
+        ],
+        "id": "afb7ad63-ed21-4d7b-b8e6-72e15d9ddd70",
+        "name": "Filter"
+      },
+      {
+        "parameters": {
+          "jsCode": "// »Ø¿≤ ±‚ªÁ ∆ƒº≠\nconst item = $input.first().json;\nif (item.category !== 'exchange') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ≥Ø¬•: '¿‘∑¬ 2026.04.03'\nconst dateMatch = text.match(/¿‘∑¬ (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nconst date = dateMatch ? dateMatch[1]+'-'+dateMatch[2]+'-'+dateMatch[3] : new Date().toISOString().slice(0,10);\n\n// 15:30 ¡§±‘¿Â ¡æ∞°\nconst c15 = text.match(/ø¿»ƒ 3Ω√ 30∫– ±‚¡ÿ¿∏∑Œ.+?([1-9],?\\d{3}\\.\\d+)ø¯ø° ¡§±‘¿Â/);\nconst usd_krw_1530 = c15 ? parseFloat(c15[1].replace(/,/g,'')) : null;\n\n// Ω√∞° (¿¸≥Ø NDF)\nconst cOpen = text.match(/¿¸≥Ø ¥Î∫Ò.+?([1-9],?\\d{3}\\.\\d+)ø¯ø°º≠ ∞≈∑°∏¶ Ω√¿€/);\nconst usd_krw_0200 = cOpen ? parseFloat(cOpen[1].replace(/,/g,'')) : null;\n\n// ¥∫Ω∫ ø‰æ‡ (∏ÆµÂ πÆ¥‹)\nconst lead = text.match(/\\(º≠øÔ=ø¨«’¿Œ∆˜∏∆Ω∫\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[1].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'ø¯/¥ﬁ∑Ø(¡æ∞° 15:30)': usd_krw_1530,\n  'ø¯/¥ﬁ∑Ø(¡æ∞° 02:00)': usd_krw_0200,\n  news_text: newsText,\n  category: 'exchange'\n}}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1568,
+          32
+        ],
+        "id": "5c922a4e-0506-4df3-8402-0b1d9897d5e9",
+        "name": "Parse Exchange"
+      },
+      {
+        "parameters": {
+          "jsCode": "// ¿Ø∞° ±‚ªÁ ∆ƒº≠\nconst item = $input.first().json;\nif (item.category !== 'oil') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ≥Ø¬• (±‚ªÁ ≥Ø¬• - 1¿œ: ¥∫øÂ ∏∂∞®¿∫ ¿¸≥Ø ±‚¡ÿ)\nconst dateMatch = text.match(/¿‘∑¬ (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nlet date;\nif (dateMatch) {\n  const d = new Date(`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`);\n  d.setDate(d.getDate() - 1);\n  date = d.toISOString().slice(0, 10);\n} else {\n  const d = new Date();\n  d.setDate(d.getDate() - 1);\n  date = d.toISOString().slice(0, 10);\n}\n\n// WTI ¡æ∞°: 'πË∑≤¥Á 111.54¥ﬁ∑Øø° ∏∂∞®'\nconst wtiMatch = text.match(/πË∑≤¥Á\\s*([\\d,]+\\.?\\d*)\\s*¥ﬁ∑Øø° ∏∂∞®/);\nconst wti = wtiMatch ? parseFloat(wtiMatch[1].replace(/,/g,'')) : null;\n\n// ¥∫Ω∫ ø‰æ‡\nconst lead = text.match(/\\((¥∫øÂ|º≠øÔ)=ø¨«’[^)]*\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[2].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  'WTI¿Ø(NYMEX)': wti,\n  news_text: newsText,\n  category: 'oil'\n}}];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1568,
+          560
+        ],
+        "id": "77e950be-59aa-466e-94af-cfa9f744d74b",
+        "name": "Parse Oil"
+      },
+      {
+        "parameters": {
+          "jsCode": "// √§±« ±‚ªÁ ∆ƒº≠\nconst item = $input.first().json;\nif (item.category !== 'bond') return [];\n\nconst text = (item.content || '').replace(/\\s+/g, ' ');\n\n// ≥Ø¬•\nconst dateMatch = text.match(/¿‘∑¬ (\\d{4})\\.(\\d{2})\\.(\\d{2})/);\nconst date = dateMatch ? dateMatch[1]+'-'+dateMatch[2]+'-'+dateMatch[3] : new Date().toISOString().slice(0,10);\n\n// 3≥‚π∞\nconst b3 = text.match(/±π∞Ì√§ 3≥‚π∞ √÷¡æ»£∞° ºˆ¿Õ∑¸¿∫[^%]*?(\\d+\\.\\d+)%/);\n// 10≥‚π∞\nconst b10 = text.match(/±π∞Ì√§ 10≥‚π∞ ±›∏Æ¥¬[^%]*?(\\d+\\.\\d+)%/);\n\n// ¥∫Ω∫ ø‰æ‡\nconst lead = text.match(/\\(º≠øÔ=ø¨«’¿Œ∆˜∏∆Ω∫\\)[^=]+= (.{20,300})\\./);\nconst newsText = lead ? lead[1].trim() : '';\n\nreturn [{ json: {\n  DATE: date,\n  '±π∞Ì√§±«(3≥‚)': b3 ? parseFloat(b3[1]) : null,\n  '±π∞Ì√§±«(10≥‚)': b10 ? parseFloat(b10[1]) : null,\n  news_text: newsText,\n  category: 'bond'\n}}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1568,
+          880
+        ],
+        "id": "f64f37d6-6205-4210-9cae-c32dc4d72ec6",
+        "name": "Parse Bond"
+      },
+      {
+        "parameters": {
+          "jsCode": "// ±‚ªÁ ¡¶∏Ò¿∏∑Œ category ∫Œø© + URL √ﬂ√‚\nconst item = $input.first().json;\nconst title = item.title || '';\nconst link = item.link || item.url || item.guid || '';\n\nlet category = null;\nif (title.includes('[º≠»Ø-∏∂∞®]')) category = 'exchange';\nelse if (title.includes('[√§±«-∏∂∞®]')) category = 'bond';\nelse if (title.includes('[¥∫øÂ¿Ø∞°]')) category = 'oil';\n\nif (!category) return [];\n\nreturn [{ json: { ...item, category, articleUrl: link } }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          672,
+          560
+        ],
+        "id": "1d17bd3c-5186-4be4-901e-26d62ad934a6",
+        "name": "≈∞øˆµÂ∫∞ ∫–∑˘"
+      },
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "custom",
+                "cronExpression": "0 */5 4-9 * * 2-6"
+              }
+            ]
+          }
+        },
+        "id": "rss-s1n9-0001-0001-0001-000000000001",
+        "name": "RSS S1N9 (¿Ø∞°)",
+        "type": "n8n-nodes-base.rssFeedReadTrigger",
+        "typeVersion": 1,
+        "position": [
+          224,
+          656
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+            "mode": "list",
+            "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 604037688,
+            "mode": "list",
+            "cachedResultName": "¿Ø∞°"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "DATE": "={{ $json.DATE }}",
+              "WTI¿Ø(NYMEX)": "={{ $json['WTI¿Ø(NYMEX)'] }}",
+              "Comment": "={{ $json.choices[0].message.content }}",
+              "category": "={{ $json.category }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "DATE",
+                "displayName": "DATE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "WTI¿Ø(NYMEX)",
+                "displayName": "WTI¿Ø(NYMEX)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Comment",
+                "displayName": "Comment",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "category",
+                "displayName": "category",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "id": "append-oil-0001-0001-0001-000000000001",
+        "name": "Append Oil Sheet",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2464,
+          592
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "vwa1sjnJPULfEh40",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1VTj2zw9vIbRkh5U9aLvGu-lmXWAaEcKw79dCqRf0lkE",
+            "mode": "list",
+            "cachedResultName": "∞Ê¡¶¡ˆ«• ¬˜∆Æ ¿⁄µø»≠"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 2013300130,
+            "mode": "list",
+            "cachedResultName": "±π∞Ì√§"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "DATE": "={{ $json.DATE }}",
+              "±π∞Ì√§±«(3≥‚)": "={{ $json['±π∞Ì√§±«(3≥‚)'] }}",
+              "±π∞Ì√§±«(10≥‚)": "={{ $json['±π∞Ì√§±«(10≥‚)'] }}",
+              "Comment": "={{ $json.choices[0].message.content }}",
+              "category": "={{ $json.category }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "DATE",
+                "displayName": "DATE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "±π∞Ì√§±«(3≥‚)",
+                "displayName": "±π∞Ì√§±«(3≥‚)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "±π∞Ì√§±«(10≥‚)",
+                "displayName": "±π∞Ì√§±«(10≥‚)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Comment",
+                "displayName": "Comment",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "category",
+                "displayName": "category",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "id": "append-bond-001-0001-0001-000000000001",
+        "name": "Append Bond Sheet",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2464,
+          784
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "vwa1sjnJPULfEh40",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "id": "merge-node-001-0001-0001-000000000001",
+        "name": "Merge Chart+Comment",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          4032,
+          176
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.articleUrl }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "http-article-nd-0001-0001-000000000001",
+        "name": "HTTP Request Article",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          896,
+          640
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "extractHtmlContent",
+          "extractionValues": {
+            "values": [
+              {
+                "key": "content",
+                "cssSelector": "#article-view-content-div"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "html-extract-nd-0001-0001-000000000001",
+        "name": "Extract Article HTML",
+        "type": "n8n-nodes-base.html",
+        "typeVersion": 1.2,
+        "position": [
+          1120,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "id": "merge-article-nd-001-0001-000000000001",
+        "name": "Merge Article Data",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1344,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          2240,
+          32
+        ],
+        "id": "8a3e3163-f861-4b8e-919e-130c92563580",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          2240,
+          592
+        ],
+        "id": "e00be533-a683-488b-a250-25e3e8a6d07f",
+        "name": "Merge1"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          2240,
+          784
+        ],
+        "id": "251cf479-c419-4cc9-adc4-785b8e48ddc6",
+        "name": "Merge2"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.category }}",
+                      "rightValue": "exchange",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "42ba8b6f-f42e-442a-85f8-055b87aee03e"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Exchange"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "05bc58e3-2bae-4af0-9df3-59d7a83e1af4",
+                      "leftValue": "={{ $json.category }}",
+                      "rightValue": "oil",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Oil"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "f0cb6597-a3c1-41e9-aa26-1bd1753b789c",
+                      "leftValue": "={{ $json.category }}",
+                      "rightValue": "bond",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Bond"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.4,
+        "position": [
+          2688,
+          16
+        ],
+        "id": "d5d6087c-5d21-466b-b960-f718cc41a497",
+        "name": "Switch"
+      }
+    ],
+    "connections": {
+      "RSS Feed Trigger": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RSS S1N9 (¿Ø∞°)": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "≈∞øˆµÂ∫∞ ∫–∑˘",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "≈∞øˆµÂ∫∞ ∫–∑˘": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request Article",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge Article Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Exchange": {
+        "main": [
+          [
+            {
+              "node": "Build Comment Prompt",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Oil": {
+        "main": [
+          [
+            {
+              "node": "Build Comment Prompt",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Parse Bond": {
+        "main": [
+          [
+            {
+              "node": "Build Comment Prompt",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge2",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Append Exchange Sheet": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "»Ø¿≤ Data": {
+        "main": [
+          [
+            {
+              "node": "±‚∞£ « ≈Õ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Ø∞° Data": {
+        "main": [
+          [
+            {
+              "node": "±‚∞£ « ≈Õ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "±π∞Ì√§ Data": {
+        "main": [
+          [
+            {
+              "node": "±‚∞£ « ≈Õ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "±‚∞£ « ≈Õ": {
+        "main": [
+          [
+            {
+              "node": "Build QuickChart JSON",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build QuickChart JSON": {
+        "main": [
+          [
+            {
+              "node": "Send to QuickChart",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send to QuickChart": {
+        "main": [
+          [
+            {
+              "node": "Send Chart Photos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send Chart Photos": {
+        "main": [
+          [
+            {
+              "node": "Merge Chart+Comment",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Comment Prompt": {
+        "main": [
+          [
+            {
+              "node": "Generate Comment",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge Chart+Comment": {
+        "main": [
+          [
+            {
+              "node": "Send Comment Text",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send Comment Text": {
+        "main": [
+          []
+        ]
+      },
+      "Append Oil Sheet": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append Bond Sheet": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request Article": {
+        "main": [
+          [
+            {
+              "node": "Extract Article HTML",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Article HTML": {
+        "main": [
+          [
+            {
+              "node": "Merge Article Data",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge Article Data": {
+        "main": [
+          [
+            {
+              "node": "Parse Exchange",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Parse Oil",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Parse Bond",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Comment": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            },
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge2",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge Chart+Comment",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge1": {
+        "main": [
+          [
+            {
+              "node": "Append Oil Sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge2": {
+        "main": [
+          [
+            {
+              "node": "Append Bond Sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Append Exchange Sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "»Ø¿≤ Data",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "¿Ø∞° Data",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "±π∞Ì√§ Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "TaeHee Kim",
+    "name": "Version 9eac6587",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-04-07T02:52:26.220Z",
+        "id": 88,
+        "workflowId": "WW51yZ7oEmyp01kW",
+        "versionId": "9eac6587-cfb0-4a7f-a99f-fedd9f82bb96",
+        "event": "activated",
+        "userId": "e7556dbf-c6f9-4597-80f7-988115231e21"
+      }
+    ]
+  }
+}

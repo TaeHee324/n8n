@@ -10,6 +10,7 @@ n8n 워크플로우 자동화 프로젝트 모음입니다.
 |------|------|------|
 | `projects/news-briefing-automation/` | 경제·증시 뉴스 수집·분석·텔레그램 브리핑 | 완료 |
 | `projects/telegram-to-obsidian/` | 텔레그램 메시지 → OneDrive → Obsidian .md 자동 저장 | 완료 |
+| `projects/chart-automation/` | 환율·WTI·국채(3·10·30년) 차트 + AI 시황 코멘트 → 텔레그램 전송 | 완료 |
 
 ---
 
@@ -45,7 +46,7 @@ with open("projects/{project-name}/workflows/{name}.json", "w", encoding="utf-8"
 - 사전 준비 (필요한 서비스, API 키)
 - 설치 방법 (Import → Credential → Variables → 경로 수정)
 - 에러 처리 정책
-- 이 프로젝트에서 배운 것들 (선택)
+- 이 프로젝트에서 배운 것들
 
 ### 3. 시크릿 확인 후 커밋
 

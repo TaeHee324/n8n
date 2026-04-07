@@ -105,6 +105,37 @@ curl -H "X-N8N-API-KEY: $(grep N8N_API_KEY .env | cut -d= -f2)" \
 
 ---
 
+## Git 커밋·푸시 자동화 규칙
+
+사용자가 **"git에 푸시해줘"** 또는 **"커밋해줘"** 라고 명령하면, 아래 사전 점검을 먼저 수행한 뒤 커밋·푸시한다.
+
+### 사전 점검 체크리스트 (커밋 전 자동 수행)
+
+1. **워크플로우 JSON pretty-print 확인**
+   - `projects/*/workflows/*.json` 파일이 compact(한 줄) 형식이면 `indent=2`로 변환
+   - 변환 명령: `python3 -c "import json; f=open('파일', encoding='utf-8'); d=json.load(f); f.close(); open('파일','w',encoding='utf-8').write(json.dumps(d, indent=2, ensure_ascii=False))"`
+
+2. **프로젝트 README.md 존재 확인**
+   - `projects/{project-name}/README.md` 가 없으면 SOP.md를 참고해 생성
+   - 포함 항목: 워크플로우 요약, 전체 구조 다이어그램, 데이터 소스, 사전 준비, 설치 방법, 에러 처리 정책, 사용 서비스
+
+3. **루트 README.md 프로젝트 목록 업데이트**
+   - `README.md`의 프로젝트 목록 테이블에 새 프로젝트가 없으면 추가
+
+4. **루트 CLAUDE.md 프로젝트 목록 업데이트**
+   - `CLAUDE.md`의 프로젝트 목록 테이블에 새 프로젝트가 없으면 추가
+
+5. **시크릿 포함 여부 확인**
+   - `.env` 파일이 스테이징에 포함되지 않았는지 반드시 확인
+   - API 키·토큰이 하드코딩된 경우 플레이스홀더(`YOUR_API_KEY`)로 교체 후 커밋
+
+### 커밋 범위
+- `git add`는 관련 프로젝트 파일만 선택적으로 추가
+- `.env`, `*.secret`, 시크릿 포함 파일은 절대 스테이징하지 않음
+- 커밋 전 변경 파일 목록을 사용자에게 보여주고 확인 후 진행
+
+---
+
 ## Git 커밋 규칙
 
 작업 중 아래 시점마다 자동으로 `git commit`을 남긴다. 사용자가 별도로 요청하지 않아도 된다.
