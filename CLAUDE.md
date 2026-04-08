@@ -35,9 +35,29 @@ curl -H "X-N8N-API-KEY: $(grep N8N_API_KEY .env | cut -d= -f2)" \
 
 ## 사용 가능한 도구
 
-### n8n MCP
+### n8n REST API (주 접근 수단)
 - n8n 인스턴스: `https://primary-production-90c7.up.railway.app`
-- 워크플로우 생성·조회·수정·실행 가능
+- **MCP는 사용하지 않는다. 모든 워크플로우 조회·생성·수정·실행은 REST API로만 처리한다.**
+- API 키: `.env`의 `N8N_API_KEY` 사용
+
+**주요 엔드포인트:**
+```bash
+# 워크플로우 목록
+curl -H "X-N8N-API-KEY: $KEY" https://primary-production-90c7.up.railway.app/api/v1/workflows
+
+# 워크플로우 조회
+curl -H "X-N8N-API-KEY: $KEY" https://primary-production-90c7.up.railway.app/api/v1/workflows/{id}
+
+# 워크플로우 수정 (PUT)
+curl -X PUT -H "X-N8N-API-KEY: $KEY" -H "Content-Type: application/json" \
+  -d @payload.json https://primary-production-90c7.up.railway.app/api/v1/workflows/{id}
+
+# 워크플로우 실행
+curl -X POST -H "X-N8N-API-KEY: $KEY" \
+  https://primary-production-90c7.up.railway.app/api/v1/workflows/{id}/activate
+```
+
+**PUT payload 허용 필드:** `name`, `nodes`, `connections`, `settings`(`executionOrder`, `timezone`, `callerPolicy`만), `staticData`
 
 ### n8n Skills (7개)
 `~/.claude/skills/` 에 설치됨. 워크플로우 제작 시 단계별로 활용하세요.
