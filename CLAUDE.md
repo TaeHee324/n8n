@@ -15,6 +15,16 @@
 
 ---
 
+## 워크플로우 ID 목록
+
+| 프로젝트 | n8n ID | 로컬 JSON 경로 |
+|---------|--------|--------------|
+| 경제지표 차트 자동화 | `WW51yZ7oEmyp01kW` | `projects/chart-automation/workflows/chart-automation.json` |
+| Telegram to Obsidian | `a5RvxdkYFp9VLw5A` | `projects/telegram-to-obsidian/workflows/telegram-to-obsidian.json` |
+| 뉴스 브리핑 자동화 | (n8n UI 확인 필요) | `projects/news-briefing-automation/workflows/news-briefing-automation.json` |
+
+---
+
 ## API 키 및 환경변수
 
 **저장 위치:** `.env` (프로젝트 루트, git에서 제외됨 — `.gitignore` 등록)
@@ -52,9 +62,13 @@ curl -H "X-N8N-API-KEY: $KEY" https://primary-production-90c7.up.railway.app/api
 curl -X PUT -H "X-N8N-API-KEY: $KEY" -H "Content-Type: application/json" \
   -d @payload.json https://primary-production-90c7.up.railway.app/api/v1/workflows/{id}
 
-# 워크플로우 실행
+# 워크플로우 활성화 (스케줄 켜기)
 curl -X POST -H "X-N8N-API-KEY: $KEY" \
   https://primary-production-90c7.up.railway.app/api/v1/workflows/{id}/activate
+
+# 워크플로우 즉시 실행 (수동 트리거)
+curl -X POST -H "X-N8N-API-KEY: $KEY" \
+  https://primary-production-90c7.up.railway.app/api/v1/workflows/{id}/run
 ```
 
 **PUT payload 허용 필드:** `name`, `nodes`, `connections`, `settings`(`executionOrder`, `timezone`, `callerPolicy`만), `staticData`
@@ -66,7 +80,7 @@ curl -X POST -H "X-N8N-API-KEY: $KEY" \
 |--------|------|
 | `n8n-workflow-patterns` | 워크플로우 패턴 설계 |
 | `n8n-node-configuration` | 노드 설정값 구성 |
-| `n8n-mcp-tools-expert` | MCP 도구 활용 |
+| `n8n-mcp-tools-expert` | (참고용 — 실제 배포는 REST API 사용) |
 | `n8n-code-javascript` | JavaScript 코드 노드 |
 | `n8n-code-python` | Python 코드 노드 |
 | `n8n-expression-syntax` | n8n 표현식 문법 |
@@ -79,14 +93,14 @@ curl -X POST -H "X-N8N-API-KEY: $KEY" \
 1. **SOP.md 읽기** — 워크플로우 로직, 데이터 스키마, 에러 처리 규칙 파악
 2. **변수 생존 검증 및 데이터 흐름 설계** — 아래 원칙 참고
 3. **노드 구성 설계** — n8n Skills(`n8n-workflow-patterns`, `n8n-node-configuration`)를 참고해 최적 노드 구성 설계
-4. **워크플로우 생성** — n8n MCP + n8n Skills를 통해 워크플로우 생성 (Credential은 노드 타입만 지정, 연결은 사용자에게 맡김)
-4. **테스트 실행** — 각 노드 개별 실행 후 전체 플로우 검증
+4. **워크플로우 생성** — REST API + n8n Skills를 통해 워크플로우 JSON 구성 후 PUT 배포 (Credential은 노드 타입만 지정, 연결은 사용자에게 맡김)
 5. **테스트 실행** — 각 노드 개별 실행 후 전체 플로우 검증
 6. **에러 자동 수정** — 실패 노드 원인 분석 후 수정
 7. **노드 설정값 검수** — 모든 노드의 필수 설정값 누락 여부 확인 (`n8n-validation-expert` 활용)
 8. **Credential 설정 가이드 제공** — 사용자가 직접 연결할 수 있도록 필요한 Credential 목록과 설정 방법 안내
 9. **워크플로우 링크 제공** — 완료 후 `https://primary-production-90c7.up.railway.app` 워크플로우 URL 제공
 10. **JSON 파일 저장** — `./projects/{project-name}/workflows/` 에 저장
+11. **워크플로우 ID 목록 업데이트** — 아래 "워크플로우 ID 목록" 테이블에 새 ID 추가
 
 ---
 
@@ -133,7 +147,7 @@ curl -X POST -H "X-N8N-API-KEY: $KEY" \
 
 1. **워크플로우 JSON pretty-print 확인**
    - `projects/*/workflows/*.json` 파일이 compact(한 줄) 형식이면 `indent=2`로 변환
-   - 변환 명령: `python3 -c "import json; f=open('파일', encoding='utf-8'); d=json.load(f); f.close(); open('파일','w',encoding='utf-8').write(json.dumps(d, indent=2, ensure_ascii=False))"`
+   - 변환 명령: `python -c "import json; f=open('파일', encoding='utf-8'); d=json.load(f); f.close(); open('파일','w',encoding='utf-8').write(json.dumps(d, indent=2, ensure_ascii=False))"`
 
 2. **프로젝트 README.md 존재 확인**
    - `projects/{project-name}/README.md` 가 없으면 SOP.md를 참고해 생성
@@ -207,11 +221,11 @@ curl -X POST -H "X-N8N-API-KEY: $KEY" \
 
 | 스크립트 | 사용법 | 설명 |
 |---------|--------|------|
-| `scripts/deploy.py` | `python3 scripts/deploy.py {id} {json_path}` | 로컬 JSON → n8n 배포 |
-| `scripts/export.py` | `python3 scripts/export.py {id} [output_path]` | n8n → 로컬 JSON 저장 |
-| `scripts/validate.py` | `python3 scripts/validate.py` | 전체 워크플로우 JSON 검증 |
-| `scripts/format_json.py` | `python3 scripts/format_json.py` | 전체 JSON pretty-print 변환 |
-| `scripts/execute.py` | `python3 scripts/execute.py {task-name}` | harness 단계별 실행 |
+| `scripts/deploy.py` | `python scripts/deploy.py {id} {json_path}` | 로컬 JSON → n8n 배포 |
+| `scripts/export.py` | `python scripts/export.py {id} [output_path]` | n8n → 로컬 JSON 저장 |
+| `scripts/validate.py` | `python scripts/validate.py` | 전체 워크플로우 JSON 검증 |
+| `scripts/format_json.py` | `python scripts/format_json.py` | 전체 JSON pretty-print 변환 |
+| `scripts/execute.py` | `python scripts/execute.py {task-name}` | harness 단계별 실행 |
 
 ---
 
