@@ -187,3 +187,40 @@ curl -X POST -H "X-N8N-API-KEY: $KEY" \
 - [ ] 모든 노드 설정값 누락 없는지 확인
 - [ ] n8n Skills를 단계별로 실행
 - [ ] **AI 노드 설정 시 `operation` 값은 반드시 실제 존재하는 값만 사용** (n8n MCP로 사전 확인)
+
+---
+
+## 슬래시 커맨드 목록
+
+| 커맨드 | 역할 |
+|--------|------|
+| `/harness` | 새 워크플로우 전체 제작 플로우 (SOP → 설계 → 생성 → 검증 → 배포) |
+| `/new-project` | 새 프로젝트 스캐폴드 자동 생성 (폴더 + SOP + README + base workflow) |
+| `/deploy` | 로컬 JSON → n8n 서버 배포 (`scripts/deploy.py` 연동) |
+| `/export` | n8n 서버 → 로컬 JSON 저장 (`scripts/export.py` 연동) |
+| `/validate` | 워크플로우 JSON 검증 (`scripts/validate.py` 연동) |
+| `/review` | 변경사항 리뷰 후 커밋 메시지 제안 |
+
+---
+
+## 자동화 스크립트
+
+| 스크립트 | 사용법 | 설명 |
+|---------|--------|------|
+| `scripts/deploy.py` | `python3 scripts/deploy.py {id} {json_path}` | 로컬 JSON → n8n 배포 |
+| `scripts/export.py` | `python3 scripts/export.py {id} [output_path]` | n8n → 로컬 JSON 저장 |
+| `scripts/validate.py` | `python3 scripts/validate.py` | 전체 워크플로우 JSON 검증 |
+| `scripts/format_json.py` | `python3 scripts/format_json.py` | 전체 JSON pretty-print 변환 |
+| `scripts/execute.py` | `python3 scripts/execute.py {task-name}` | harness 단계별 실행 |
+
+---
+
+## 참고 문서
+
+| 문서 | 내용 |
+|------|------|
+| `docs/ARCHITECTURE.md` | 전체 자동화 시스템 구조 |
+| `docs/ADR.md` | 주요 설계 결정 기록 |
+| `docs/ERRORS.md` | 에러 패턴 및 해결법 |
+| `templates/project/SOP.md` | 새 프로젝트 SOP 템플릿 |
+| `templates/workflow/base.json` | 기본 워크플로우 뼈대 |

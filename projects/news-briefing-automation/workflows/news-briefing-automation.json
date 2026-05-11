@@ -1,10 +1,5 @@
 {
-  "updatedAt": "2026-03-22T05:04:53.792Z",
-  "createdAt": "2026-03-17T12:55:02.629Z",
   "name": "뉴스 브리핑 자동화",
-  "description": null,
-  "active": true,
-  "isArchived": false,
   "nodes": [
     {
       "parameters": {},
@@ -220,17 +215,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "YOUR_SPREADSHEET_ID",
+          "value": "1gPmUrXJjjPHkK2FtBs63gPi2x9y7yzt97oFUr5jmxLA",
           "mode": "list",
           "cachedResultName": "뉴스 아카이브",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gPmUrXJjjPHkK2FtBs63gPi2x9y7yzt97oFUr5jmxLA/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "뉴스 아카이브",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gPmUrXJjjPHkK2FtBs63gPi2x9y7yzt97oFUr5jmxLA/edit#gid=0"
         },
         "options": {}
       },
@@ -244,7 +239,7 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "",
+          "id": "vwa1sjnJPULfEh40",
           "name": "Google Sheets account"
         }
       },
@@ -476,7 +471,7 @@
       ],
       "credentials": {
         "openAiApi": {
-          "id": "",
+          "id": "pt0BOOXg6IRrrCQW",
           "name": "뉴스 자동화 브리핑 워크플로우"
         }
       }
@@ -509,7 +504,7 @@
     },
     {
       "parameters": {
-        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "chatId": "@undergroundresearch36",
         "text": "={{ $json.message }}",
         "additionalFields": {
           "appendAttribution": false,
@@ -528,7 +523,7 @@
       "webhookId": "3bc5f74a-be70-4826-a0d2-3a8aafec6ab1",
       "credentials": {
         "telegramApi": {
-          "id": "",
+          "id": "OhTzD6yy7QWhnLZ2",
           "name": "밑바닥리서치 뉴스 자동화 브리핑 워크플로우"
         }
       }
@@ -583,7 +578,7 @@
       "name": "OpenAI Chat Model1",
       "credentials": {
         "openAiApi": {
-          "id": "",
+          "id": "pt0BOOXg6IRrrCQW",
           "name": "뉴스 자동화 브리핑 워크플로우"
         }
       }
@@ -652,17 +647,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "YOUR_SPREADSHEET_ID",
+          "value": "1gPmUrXJjjPHkK2FtBs63gPi2x9y7yzt97oFUr5jmxLA",
           "mode": "list",
           "cachedResultName": "뉴스 아카이브",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gPmUrXJjjPHkK2FtBs63gPi2x9y7yzt97oFUr5jmxLA/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "뉴스 아카이브",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gPmUrXJjjPHkK2FtBs63gPi2x9y7yzt97oFUr5jmxLA/edit#gid=0"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -768,7 +763,7 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "",
+          "id": "vwa1sjnJPULfEh40",
           "name": "Google Sheets account"
         }
       },
@@ -902,7 +897,7 @@
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
-          "id": "",
+          "id": "pt0BOOXg6IRrrCQW",
           "name": "뉴스 자동화 브리핑 워크플로우"
         }
       }
@@ -942,7 +937,7 @@
       "name": "OpenAI Chat Model2",
       "credentials": {
         "openAiApi": {
-          "id": "",
+          "id": "pt0BOOXg6IRrrCQW",
           "name": "뉴스 자동화 브리핑 워크플로우"
         }
       }
@@ -1662,7 +1657,7 @@
     },
     {
       "parameters": {
-        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "chatId": "@undergroundresearch36",
         "text": "={{ $json.title }}\n\n{{ $json.link }}",
         "additionalFields": {
           "appendAttribution": false,
@@ -1680,7 +1675,7 @@
       "webhookId": "3bc5f74a-be70-4826-a0d2-3a8aafec6ab1",
       "credentials": {
         "telegramApi": {
-          "id": "",
+          "id": "OhTzD6yy7QWhnLZ2",
           "name": "밑바닥리서치 뉴스 자동화 브리핑 워크플로우"
         }
       }
@@ -1935,7 +1930,7 @@
     },
     {
       "parameters": {
-        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "chatId": "7393844031",
         "text": "={{ $json.message }}",
         "additionalFields": {
           "appendAttribution": false,
@@ -1954,7 +1949,7 @@
       "webhookId": "10d9289b-b2e7-4dd4-9208-e7684b39ee2b",
       "credentials": {
         "telegramApi": {
-          "id": "",
+          "id": "OhTzD6yy7QWhnLZ2",
           "name": "밑바닥리서치 뉴스 자동화 브리핑 워크플로우"
         }
       }
@@ -2002,7 +1997,7 @@
           "conditions": [
             {
               "id": "59f2b429-5241-489e-b47e-e4d6ca36f58f",
-              "leftValue": "={{ [2,3,4,5,6].includes(new Date().getDay()) }}",
+              "leftValue": "={{ [2,3,4,5,6].includes($now.setZone('Asia/Seoul').weekday % 7) }}",
               "rightValue": 1,
               "operator": {
                 "type": "boolean",
@@ -2036,6 +2031,7 @@
       "name": "Merge market data"
     }
   ],
+  "pinData": {},
   "connections": {
     "Manual Trigger": {
       "main": [
@@ -2899,6 +2895,7 @@
       ]
     }
   },
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -2907,9 +2904,11 @@
     "timeSavedMode": "fixed",
     "timezone": "Asia/Seoul"
   },
+  "versionId": "9d84400c-dd53-4d15-8526-bb04bb17548a",
   "meta": {
-    "templateCredsSetupCompleted": true
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2123bad4264795855128486addb6edf83a2896f86dec4aa9fc310910b3b07d45"
   },
-  "pinData": {},
+  "id": "OeA3kgv0CnS2gsZ3",
   "tags": []
 }

@@ -77,6 +77,20 @@ git push origin main-local:main
 
 ---
 
+## 폴더 구조
+
+| 폴더/파일 | 설명 |
+|---------|------|
+| `projects/` | 각 워크플로우 프로젝트 (SOP, README, workflow JSON) |
+| `scripts/` | 배포·내보내기·검증 자동화 스크립트 |
+| `templates/` | 새 프로젝트 생성 시 사용하는 템플릿 |
+| `docs/` | 시스템 아키텍처·설계 결정·에러 패턴 문서 |
+| `.claude/` | Claude Code 설정 및 슬래시 커맨드 |
+| `phases/` | harness 실행 계획 파일 (git 추적) |
+| `CLAUDE.md` | Claude Code 작업 지침 |
+
+---
+
 ## 저장소 정보
 
 - GitHub: `https://github.com/TaeHee324/n8n`

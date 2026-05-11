@@ -1,0 +1,107 @@
+{
+  "task": "harness-setup",
+  "description": "n8n 워크플로우 프로젝트에 harness 프레임워크 구축",
+  "workdir": "C:/Users/PC/Desktop/n8n",
+  "executionMode": "parallel",
+  "steps": [
+    {
+      "id": "step0",
+      "name": "Orchestrator Before",
+      "file": "step0-orchestrator-before.md",
+      "assignee": "orchestrator",
+      "parallel": false,
+      "status": "completed",
+      "note": ".gitignore 업데이트 + phases/harness-setup/ 생성 완료"
+    },
+    {
+      "id": "step1",
+      "name": "Agent A — .claude/ 영역",
+      "file": "step1-agent-a.md",
+      "assignee": "agent-a",
+      "parallel": true,
+      "territory": ".claude/",
+      "creates": [
+        ".claude/settings.json",
+        ".claude/commands/harness.md",
+        ".claude/commands/new-project.md",
+        ".claude/commands/deploy.md",
+        ".claude/commands/export.md",
+        ".claude/commands/validate.md",
+        ".claude/commands/review.md"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "step2",
+      "name": "Agent B — scripts/ 영역",
+      "file": "step2-agent-b.md",
+      "assignee": "agent-b",
+      "parallel": true,
+      "territory": "scripts/",
+      "creates": [
+        "scripts/execute.py",
+        "scripts/deploy.py",
+        "scripts/export.py",
+        "scripts/validate.py",
+        "scripts/format_json.py",
+        "scripts/hooks/pre_bash_check.py",
+        "scripts/hooks/post_write_validate.py",
+        "scripts/hooks/on_stop_check.py"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "step3",
+      "name": "Agent C — templates/ 영역",
+      "file": "step3-agent-c.md",
+      "assignee": "agent-c",
+      "parallel": true,
+      "territory": "templates/",
+      "creates": [
+        "templates/project/SOP.md",
+        "templates/project/README.md",
+        "templates/workflow/base.json"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "step4",
+      "name": "Agent D — docs/ 영역",
+      "file": "step4-agent-d.md",
+      "assignee": "agent-d",
+      "parallel": true,
+      "territory": "docs/",
+      "creates": [
+        "docs/ARCHITECTURE.md",
+        "docs/ADR.md",
+        "docs/ERRORS.md"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "step5",
+      "name": "Orchestrator After",
+      "file": "step5-orchestrator-after.md",
+      "assignee": "orchestrator",
+      "parallel": false,
+      "dependsOn": ["step1", "step2", "step3", "step4"],
+      "modifies": [
+        "CLAUDE.md",
+        "README.md",
+        "C:/Users/PC/.claude/projects/C--Users-PC-Desktop-n8n/memory/MEMORY.md"
+      ],
+      "status": "pending"
+    }
+  ],
+  "projectContext": {
+    "n8nInstance": "https://primary-production-90c7.up.railway.app",
+    "apiKeyEnvVar": "N8N_API_KEY",
+    "platform": "Windows 11",
+    "shell": "PowerShell",
+    "workflows": [
+      { "name": "Telegram to Obsidian",   "id": "a5RvxdkYFp9VLw5A", "path": "projects/telegram-to-obsidian/workflows/telegram-to-obsidian.json" },
+      { "name": "뉴스 브리핑 자동화",       "id": "unknown",          "path": "projects/news-briefing-automation/workflows/news-briefing-automation.json" },
+      { "name": "경제지표 차트 자동화",     "id": "WW51yZ7oEmyp01kW", "path": "projects/chart-automation/workflows/chart-automation.json" }
+    ]
+  }
+}

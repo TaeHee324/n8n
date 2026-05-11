@@ -6,10 +6,18 @@ wf_*.json
 .DS_Store
 Thumbs.db
 
-# Claude 개인 설정
-.claude/
+# Claude 개인 설정 (settings.json과 commands/는 공유 — 추적함)
+.claude/settings.local.json
 
 # 환경변수 및 API 키 (절대 커밋 금지)
 .env
 .env.local
 *.secret
+
+# Python 캐시
+__pycache__/
+*.pyc
+*.pyo
+
+# Harness 런타임 출력 (계획 파일은 추적, 실행 결과만 제외)
+phases/**/*-output.json
